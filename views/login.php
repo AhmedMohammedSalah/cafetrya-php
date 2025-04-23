@@ -45,7 +45,7 @@
   </div>
   <br>
   <div >
-     <a href="confirm-password.php">forget password ?</a>
+     <a href="forget-password.php">forget password ?</a>
   
   </div>
   <br>
