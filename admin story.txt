@@ -1,0 +1,34 @@
+pages 
+	front 
+		-Home page 
+				-dropdownlist users 
+				-list product  
+				-form to create order < to selected user >
+				-search by productName
+				-pagination 
+		-Products Page 
+				-CRUD operations 
+				-paginantion 
+				
+		-Users Page  
+				-CRUD operations 
+				-paginantion
+		-Checks Page
+				-filteration -> user,date 
+				-list user orders <Accordion>
+				-paginantion
+				
+		-unfinshed orders Page 
+				-list all unfinshed orders 
+				-pagination 
+		 
+				
+
+
+
+
+
+
+
+
+Database

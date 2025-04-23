@@ -1,0 +1,50 @@
+					cafetrya 
+		
+pages 
+	front 
+		login - forget password 
+		user --> 
+			-Home page 
+				-list product 
+				-read latest order 
+				-form to create order 
+				-search by productName
+				-pagination 
+			-My Orders page 
+				-get all orders filtered by signed user  <php>
+				-filter by date 
+				-list order details <Accordion>
+				-cancel order 
+				-pagination 
+	< make your ideas >
+	
+	logic functions
+		login 		-check
+				-save into localstorage key -> ("userData")
+		updatePassword(usernew)  -insser
+				
+				
+Database cafe 
+	table users 
+		-name 
+		-email
+		-password
+	table products 
+		-productName 
+		-image
+		-price 
+		-categoryId
+	table orderItem
+		-productId
+		-roomId
+		-orderId
+		-quantity
+		-status 
+		-createdAt --date
+	table orders
+		-userId
+		-total
+	table rooms 
+		-roomName 
+	rable category 
+		-categoryName
