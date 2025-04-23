@@ -7,13 +7,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        form {
+            background-color: white;
+            width: 400px;
+            height: 400px;
+            padding: 20px;
+            margin-top: 100px;
+            /* border: 1px solid black ; */
+        }
+        h1 {
+            text-align: center;
+        }
+
+    </style>
 </head>
 <body>
-    <form action="post">
-        <input type="text" name="name" placeholder="name" >
-        <input type="password" name="password" placeholder="password">
-        <input type="submit" value="Login">
-        <input type="">
-    </form>
+<form>
+    <h1>Cafeteria</h1>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Email:</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    <br>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Password:</label>
+    <input type="password" class="form-control" id="exampleInputPassword1">
+  </div>
+  <br>
+  <div >
+    <a href="">Confirm password ?</a>
+
+  </div>
+  <br>
+  <div>
+  <button type="submit" class="btn btn-primary">login</button>
+
+  </div>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+
 </body>
 </html>
