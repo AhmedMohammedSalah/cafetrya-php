@@ -12,7 +12,8 @@ function getAllRooms() {
     if (mysqli_num_rows($result) == 0) {
         echo "No rooms found!";
     }
-
     return $result;
 }
+
 ?>
+
