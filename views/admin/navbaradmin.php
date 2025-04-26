@@ -5,7 +5,66 @@
     <title>Admin - Checks</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <style>
+    .navbar-custom {
+        background: linear-gradient(90deg, #007bff, #00c6ff);
+        padding: 10px 0;
+        height: 70px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .navbar-brand {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: white;
+        display: flex;
+        align-items: center;
+    }
+    .navbar-brand i {
+        font-size: 1.8rem;
+        margin-right: 8px;
+    }
+    .nav-link {
+        font-size: 1rem;
+        color: white !important;
+        margin: 0 10px;
+        transition: color 0.3s, background-color 0.3s;
+        border-radius: 5px;
+    }
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #fff !important;
+    }
+    .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.3);
+        font-weight: bold;
+    }
+    .user-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+        margin-left: 10px;
+    }
+    .user-name {
+        color: white;
+        font-size: 1rem;
+        margin-right: 10px;
+    }
+    .navbar-toggler {
+        border: none;
+    }
+    @media (max-width: 992px) {
+        .nav-link {
+            margin: 5px 0;
+        }
+        .user-info {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+    }
+</style>
 </head>
 <body>
 
