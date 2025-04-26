@@ -6,10 +6,10 @@ $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
-
+    
     $sql = "SELECT * FROM users WHERE email='$email'";
     $result = mysqli_query($myconnection, $sql);
-
+    
     if (mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_assoc($result);
 
