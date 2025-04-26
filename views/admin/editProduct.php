@@ -320,19 +320,33 @@ if (isset($_POST['save_category'])) {
             <div class="sidebar-divider"></div>
             
             <div class="nav flex-column">
-                <a href="index.php" class="sidebar-item">
+                <a href="home.php" class="sidebar-item">
                     <i class="fas fa-home"></i>
                     <span>Home</span>
                 </a>
                 
-                <a href="listProducts.php" class="sidebar-item active">
+                <a href="listProducts.php" class="sidebar-item">
                     <i class="fas fa-box-open"></i>
                     <span>Products</span>
                 </a>
                 
-                <!-- ... rest of your sidebar items ... -->
+                <a href="users.php" class="sidebar-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                
+                
+                <a href="checks.php" class="sidebar-item">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Checks</span>
+                </a>
+                
+                <a href="unfinshedOrders.php" class="sidebar-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Pending Orders</span>
+                </a>
             </div>
-        </div>
+    </div>
         
         <div class="main-content">
             <div class="form-container">

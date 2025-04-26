@@ -1,3 +1,97 @@
+<?php
+// Initialize variables
+$product_message = '';
+$category_message = '';
+$selected_category = '';
+$errors = []; // Array to store validation errors
+
+// Include necessary files
+include_once(__DIR__ .'/../../models/product.php');
+include_once(__DIR__ .'/../../models/category.php');
+include_once(__DIR__ .'/../../controllers/imagesUpload.php');
+
+// Handle product submission
+if (isset($_POST['add_product'])) {
+    // Validate product name
+    $productName = trim($_POST['product_name']);
+    if (empty($productName)) {
+        $errors['product_name'] = 'Product name is required';
+    } elseif (strlen($productName) > 255) {
+        $errors['product_name'] = 'Product name must be less than 255 characters';
+    }
+    
+    // Validate price
+    $price = trim($_POST['price']);
+    if (empty($price)) {
+        $errors['price'] = 'Price is required';
+    } elseif (!is_numeric($price)) {
+        $errors['price'] = 'Price must be a valid number';
+    } elseif ($price <= 0) {
+        $errors['price'] = 'Price must be greater than 0';
+    }
+    
+    // Validate category
+    $categoryId = intval($_POST['category']);
+    if ($categoryId <= 0) {
+        $errors['category'] = 'Please select a valid category';
+    }
+    
+    // Handle image upload
+    $image = '';
+    if (empty($_FILES['image']['name'])) {
+        $errors['image'] = 'Product image is required';
+    } else {
+        $uploadResult = imageUpload();
+        if ($uploadResult !== false) {
+            $image = $uploadResult;
+        } else {
+            $errors['image'] = 'Failed to upload image. Please try again.';
+        }
+    }
+    
+    // If no errors, proceed with product creation
+    if (empty($errors)) {
+        if (addProduct($productName, $image, $price, $categoryId)) {
+            $product_message = 'Product added successfully!';
+            // Clear form fields
+            $_POST = array();
+            // wait for 2 seconds before redirecting
+            echo "<script>
+                setTimeout(function() {
+                    window.location.href = 'listProducts.php';
+                }, 2000);
+            </script>";
+        } else {
+            $product_message = 'Failed to add product. Please try again.';
+            $selected_category = $categoryId; // Keep the selected category
+        }
+    } else {
+        $product_message = 'Please correct the errors below.';
+        $selected_category = $categoryId; // Keep the selected category
+    }
+}
+
+// Handle category submission
+if (isset($_POST['save_category'])) {
+    $categoryName = trim($_POST['category_name']);
+    
+    if (empty($categoryName)) {
+        $category_message = 'Category name is required';
+    } elseif (strlen($categoryName) > 255) {
+        $category_message = 'Category name must be less than 255 characters';
+    } else {
+        if (addCategory($categoryName)) {
+            $category_message = 'Category added successfully!';
+            $categories = getCategories();
+        } else {
+            $category_message = 'Failed to add category. It may already exist.';
+        }
+    }
+    
+    // Prevent form resubmission
+    echo "<script>window.history.replaceState(null, null, window.location.href);</script>";
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,19 +106,9 @@
             --secondary-color: #f8f9fc;
             --success-color: #1cc88a;
             --info-color: #36b9cc;
-            --border-radius: 0.35rem;
-        }
-        
-        body {
-            background-color: #f8f9fc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        :root {
-            --primary-color: #4e73df;
-            --secondary-color: #f8f9fc;
-            --accent-color: #1cc88a;
             --danger-color: #e74a3b;
             --warning-color: #f6c23e;
+            --border-radius: 0.35rem;
             --sidebar-width: 250px;
         }
         
@@ -225,6 +309,19 @@
             display: none;
         }
         
+        /* Form error styles */
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+            background-image: none !important;
+        }
+        
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 0 15px;
@@ -238,71 +335,105 @@
 </head>
 <body>
     <div class="container">
-         <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <a href="#" class="sidebar-brand d-flex align-items-center justify-content-center">
-            <i class="fas fa-store me-2"></i>
-            <span>Admin Panel</span>
-        </a>
-        
-        <div class="sidebar-divider"></div>
-        
-        <div class="nav flex-column">
-            <a href="index.php" class="sidebar-item">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <a href="#" class="sidebar-brand d-flex align-items-center justify-content-center">
+                <i class="fas fa-store me-2"></i>
+                <span>Admin Panel</span>
             </a>
             
-            <a href="products.php" class="sidebar-item">
-                <i class="fas fa-box-open"></i>
-                <span>Products</span>
-            </a>
+            <div class="sidebar-divider"></div>
             
-            <a href="users.php" class="sidebar-item">
-                <i class="fas fa-users"></i>
-                <span>Users</span>
-            </a>
-            
-            <a href="manual_order.php" class="sidebar-item active">
-                <i class="fas fa-cart-plus"></i>
-                <span>Manual Order</span>
-            </a>
-            
-            <a href="checks.php" class="sidebar-item">
-                <i class="fas fa-file-invoice-dollar"></i>
-                <span>Checks</span>
-            </a>
-            
-            <a href="unfinshedOrders.php" class="sidebar-item ">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Pending Orders</span>
-            </a>
+            <div class="nav flex-column">
+                <a href="home.php" class="sidebar-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                
+                <a href="listProducts.php" class="sidebar-item">
+                    <i class="fas fa-box-open"></i>
+                    <span>Products</span>
+                </a>
+                
+                <a href="users.php" class="sidebar-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                
+                
+                <a href="checks.php" class="sidebar-item">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Checks</span>
+                </a>
+                
+                <a href="unfinshedOrders.php" class="sidebar-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Pending Orders</span>
+                </a>
+            </div>
         </div>
-    </div>
+        
         <div class="form-container">
             <h2 class="page-title"><i class="fas fa-plus-circle"></i> Add New Product</h2>
             
-            <?php if (isset($product_message)): ?>
-                <div class="alert alert-info d-flex align-items-center">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <?= $product_message ?>
+            <?php if (!empty($product_message)): ?>
+                <div class="alert alert-<?= empty($errors) ? 'success' : 'danger' ?> d-flex align-items-center border-2 <?= empty($errors) ? 'border-success' : 'border-danger' ?> alert-dismissible fade show">
+                    <i class="fas <?= empty($errors) ? 'fa-check-circle' : 'fa-exclamation-triangle' ?> me-3 fs-4"></i>
+                    <div class="flex-grow-1">
+                        <?= htmlspecialchars($product_message) ?>
+                        <?php if (!empty($errors)): ?>
+                            <ul class="mb-0 mt-2">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?= htmlspecialchars($error) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                
+                <script>
+                // Auto-dismiss alert after 5 seconds
+                document.addEventListener('DOMContentLoaded', function() {
+                    var alert = document.querySelector('.alert');
+                    if (alert) {
+                        setTimeout(function() {
+                            var bsAlert = new bootstrap.Alert(alert);
+                            bsAlert.close();
+                        }, 5000);
+                    }
+                });
+                </script>
             <?php endif; ?>
             
             <form method="POST" enctype="multipart/form-data">
                 <div class="mb-4">
                     <label for="product_name" class="form-label"><i class="fas fa-tag me-2"></i>Product Name</label>
                     <div class="input-icon">
-                        <input type="text" class="form-control" id="product_name" name="product_name" required>
+                        <input type="text" class="form-control <?= isset($errors['product_name']) ? 'is-invalid' : '' ?>" 
+                               id="product_name" name="product_name" 
+                               value="<?= htmlspecialchars($_POST['product_name'] ?? '') ?>" >
                         <i class="fas fa-edit"></i>
+                        <?php if (isset($errors['product_name'])): ?>
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($errors['product_name']) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
                 <div class="mb-4">
                     <label for="price" class="form-label"><i class="fas fa-dollar-sign me-2"></i>Price</label>
                     <div class="input-icon">
-                        <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                        <input type="number" step="0.01" class="form-control <?= isset($errors['price']) ? 'is-invalid' : '' ?>" 
+                               id="price" name="price" 
+                               value="<?= htmlspecialchars($_POST['price'] ?? '') ?>" >
                         <i class="fas fa-money-bill-wave"></i>
+                        <?php if (isset($errors['price'])): ?>
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($errors['price']) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
@@ -310,18 +441,24 @@
                     <div class="col-md-9">
                         <label for="category" class="form-label"><i class="fas fa-list-alt me-2"></i>Category</label>
                         <div class="input-icon">
-                            <select class="form-select" id="category" name="category" required>
+                            <select class="form-select <?= isset($errors['category']) ? 'is-invalid' : '' ?>" 
+                                    id="category" name="category" >
                                 <option value="">Select a category</option>
                                 <?php
-                                include(__DIR__ .'/../../models/category.php');
                                 $categories = getCategories();
+                                $selectedCategory = $_POST['category'] ?? $selected_category;
                                 foreach ($categories as $category) {
-                                    $selected = ($category['id'] == $selected_category) ? 'selected' : '';
+                                    $selected = ($category['id'] == $selectedCategory) ? 'selected' : '';
                                     echo "<option value='{$category['id']}' $selected>{$category['category_name']}</option>";
                                 }
                                 ?>
                             </select>
                             <i class="fas fa-chevron-down"></i>
+                            <?php if (isset($errors['category'])): ?>
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($errors['category']) ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
@@ -333,13 +470,19 @@
                 
                 <div class="mb-4">
                     <label class="form-label"><i class="fas fa-image me-2"></i>Product Image</label>
-                    <div class="file-upload-container">
+                    <div class="file-upload-container <?= isset($errors['image']) ? 'border-danger' : '' ?>">
                         <label class="file-upload-label">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Click to upload or drag and drop</span>
-                            <input type="file" class="file-upload-input" id="image" name="image">
+                            <input type="file" class="file-upload-input" id="image" name="image" accept="image/*" >
                         </label>
                     </div>
+                    <?php if (isset($errors['image'])): ?>
+                        <div class="invalid-feedback d-block">
+                            <i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($errors['image']) ?>
+                        </div>
+                    <?php endif; ?>
+                    <small class="text-muted">Max file size: 2MB. Allowed formats: JPG, PNG, GIF.</small>
                 </div>
                 
                 <div class="d-grid">
@@ -361,9 +504,15 @@
                 </div>
                 <form method="POST" id="categoryForm">
                     <div class="modal-body">
+                        <?php if (!empty($category_message)): ?>
+                            <div class="alert alert-<?= strpos(strtolower($category_message), 'success') !== false ? 'success' : 'danger' ?>">
+                                <?= htmlspecialchars($category_message) ?>
+                            </div>
+                        <?php endif; ?>
                         <div class="mb-3">
                             <label for="category_name" class="form-label"><i class="fas fa-tag me-2"></i>Category Name</label>
-                            <input type="text" class="form-control" id="category_name" name="category_name" required>
+                            <input type="text" class="form-control" id="category_name" name="category_name" required
+                                   value="<?= isset($_POST['category_name']) ? htmlspecialchars($_POST['category_name']) : '' ?>">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -377,84 +526,53 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         // Clear category form when modal closes
-        $('#addCategoryModal').on('hidden.bs.modal', function () {
-            $('#category_name').val('');
+        document.getElementById('addCategoryModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('category_name').value = '';
         });
         
         // Show file name when image is selected
-        $('#image').change(function() {
-            var fileName = $(this).val().split('\\').pop();
+        document.getElementById('image').addEventListener('change', function() {
+            var fileName = this.value.split('\\').pop();
+            var uploadContainer = this.closest('.file-upload-container');
             if (fileName) {
-                $('.file-upload-container span').html(fileName);
-                $('.file-upload-container i').removeClass('fa-cloud-upload-alt').addClass('fa-check-circle');
-                $('.file-upload-container').css({
-                    'border-color': '#1cc88a',
-                    'background-color': 'rgba(28, 200, 138, 0.05)'
-                });
+                uploadContainer.querySelector('span').textContent = fileName;
+                uploadContainer.querySelector('i').classList.remove('fa-cloud-upload-alt');
+                uploadContainer.querySelector('i').classList.add('fa-check-circle');
+                uploadContainer.style.borderColor = '#1cc88a';
+                uploadContainer.style.backgroundColor = 'rgba(28, 200, 138, 0.05)';
             }
         });
         
         // If we have a category message, show the modal
-        <?php if (isset($category_message) && isset($_POST['save_category'])): ?>
-            $('#addCategoryModal').modal('hide');
-            alert('<?= addslashes($category_message) ?>');
+        <?php if (!empty($category_message) && isset($_POST['save_category'])): ?>
+            var categoryModal = new bootstrap.Modal(document.getElementById('addCategoryModal'));
+            categoryModal.show();
         <?php endif; ?>
-    });
-
-    </script>
-
-<?php
-// Initialize variables
-$product_message = '';
-$category_message = '';
-$selected_category = '';
-
-// Include necessary files
-include_once(__DIR__ .'/../../models/product.php');
-include_once(__DIR__ .'/../../models/category.php');
-include_once(__DIR__ .'/../../controllers/imagesUpload.php');
-
-// Handle product submission
-if (isset($_POST['add_product'])) {
-    $productName = $_POST['product_name'];
-    $price = $_POST['price'];
-    $categoryId = $_POST['category'];
-    
-    // Handle image upload
-    $image = imageUpload();
-    
-    if ($image) {
-        if (addProduct($productName, $image, $price, $categoryId)) {
-            $product_message = 'Product added successfully!';
-            // Clear form fields
-            $_POST = array();
-        } else {
-            $product_message = 'Failed to add product.';
-            $selected_category = $categoryId; // Keep the selected category
+        
+        // Client-side validation for file upload
+        const imageInput = document.getElementById('image');
+        if (imageInput) {
+            imageInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    // Check file size (2MB max)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('File size exceeds 2MB limit. Please choose a smaller file.');
+                        this.value = '';
+                    }
+                    
+                    // Check file type
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Only JPG, PNG, and GIF files are allowed.');
+                        this.value = '';
+                    }
+                }
+            });
         }
-    } else {
-        $product_message = 'Failed to upload image.';
-        $selected_category = $categoryId; // Keep the selected category
-    }
-}
-
-// Handle category submission
-if (isset($_POST['save_category'])) {
-    $categoryName = $_POST['category_name'];
-    
-    if (addCategory($categoryName)) {
-        $category_message = 'Category added successfully!';
-        $categories = getCategories();
-
-    } else {
-        $category_message = 'Failed to add category.';
-    }
-
-    // Prevent form resubmission
-    echo "<script>window.history.replaceState(null, null, window.location.href);</script>";
-    exit();
-}?>
+    });
+    </script>
 </body>
 </html>

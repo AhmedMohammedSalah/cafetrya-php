@@ -304,46 +304,42 @@ $totalPages = ceil($totalOrders / $itemsPerPage);
 </head>
 <body>
     <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <a href="#" class="sidebar-brand d-flex align-items-center justify-content-center">
-            <i class="fas fa-store me-2"></i>
-            <span>Admin Panel</span>
-        </a>
-        
-        <div class="sidebar-divider"></div>
-        
-        <div class="nav flex-column">
-            <a href="index.php" class="sidebar-item">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
+     <div class="sidebar">
+            <a href="#" class="sidebar-brand d-flex align-items-center justify-content-center">
+                <i class="fas fa-store me-2"></i>
+                <span>Admin Panel</span>
             </a>
             
-            <a href="products.php" class="sidebar-item">
-                <i class="fas fa-box-open"></i>
-                <span>Products</span>
-            </a>
+            <div class="sidebar-divider"></div>
             
-            <a href="users.php" class="sidebar-item">
-                <i class="fas fa-users"></i>
-                <span>Users</span>
-            </a>
-            
-            <a href="manual_order.php" class="sidebar-item">
-                <i class="fas fa-cart-plus"></i>
-                <span>Manual Order</span>
-            </a>
-            
-            <a href="checks.php" class="sidebar-item">
-                <i class="fas fa-file-invoice-dollar"></i>
-                <span>Checks</span>
-            </a>
-            
-            <a href="unfinshedOrders.php" class="sidebar-item active">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Pending Orders</span>
-            </a>
+            <div class="nav flex-column">
+                <a href="home.php" class="sidebar-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                
+                <a href="listProducts.php" class="sidebar-item">
+                    <i class="fas fa-box-open"></i>
+                    <span>Products</span>
+                </a>
+                
+                <a href="users.php" class="sidebar-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                
+                
+                <a href="checks.php" class="sidebar-item">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Checks</span>
+                </a>
+                
+                <a href="unfinshedOrders.php" class="sidebar-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Pending Orders</span>
+                </a>
+            </div>
         </div>
-    </div>
     
     <!-- Main Content -->
     <div class="main-content">
