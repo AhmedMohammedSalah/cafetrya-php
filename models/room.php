@@ -1,4 +1,6 @@
 <?php
+// when working on funcational 
+// don't forget DRY / Single responsibility principle
 function getAllRooms() {
     include_once(__DIR__ . '/../connection.php');
 
