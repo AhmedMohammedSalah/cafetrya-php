@@ -11,6 +11,7 @@ pages
 				-paginantion 
 				
 		-Users Page  
+			-all users page 
 				-CRUD operations 
 				-paginantion
 		-Checks Page
@@ -18,7 +19,7 @@ pages
 				-list user orders <Accordion>
 				-paginantion
 				
-		-unfinshed orders Page 
+		-unfinshed orders Page <Done>
 				-list all unfinshed orders 
 				-pagination 
 		 
