@@ -94,7 +94,7 @@
                 <?php else: ?>
                     <span class="user-name">Guest</span>
                 <?php endif; ?>
-                <i class="fa-solid fa-user-tie"></i>
+                <i class="fa-solid fa-user-tie text-light"></i>
             </div>
         </div>
     </div>

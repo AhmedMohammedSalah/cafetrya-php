@@ -163,12 +163,12 @@
           <a class="nav-link" href="myorder.php">My Orders</a>
         </li>
       </ul>
-      <!-- Uncomment to show user info
+      
       <div class="d-flex align-items-center">
-        <span class="user-name"><?= $_SESSION['user_name'] ?></span>
-        <img src="/php-cafeteria/public/uploads/<?= $_SESSION['user_image'] ?>" class="user-avatar" alt="User Avatar">
+        <!-- <span class="user-name"><?= $_SESSION['user_name'] ?></span> -->
+        <i class="fa-solid fa-user text-light"></i>
       </div>
-      -->
+     
     </div>
   </div>
 </nav>
