@@ -33,6 +33,7 @@ CREATE TABLE products (
     category_id INT,
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
+update products set image = 'uploads/77f4867461e4c21941c83ef6f6ee7dd1.jpg' where id > 0;
 
 -- orders table
 CREATE TABLE orders (
