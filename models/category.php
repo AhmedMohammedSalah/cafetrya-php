@@ -1,7 +1,8 @@
 <?php 
     function addCategory($categoryName) {
-        include_once( '../connection.php');
-        $sql = "INSERT INTO categories (categoryName) VALUES ('$categoryName')";
+        include(__DIR__ . '/../connection.php');
+
+        $sql = "INSERT INTO categories (category_name) VALUES ('$categoryName')";
         if (mysqli_query($myconnection, $sql)) {
             return true;
         } else {
@@ -11,7 +12,7 @@
     // get all categories
     // return array of categories
     function getCategories() {
-        include_once ('../connection.php');
+        include(__DIR__ . '/../connection.php');
         $sql = "SELECT * FROM categories";
         $result = mysqli_query($myconnection, $sql);
         $categories = [];
