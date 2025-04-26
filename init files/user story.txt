@@ -40,11 +40,10 @@ Database cafe
 		-orderId
 		-quantity
 		-status 
-		-createdAt --date
 	table orders
 		-userId
 		-total
 	table rooms 
 		-roomName 
-	rable category 
+	table category 
 		-categoryName
