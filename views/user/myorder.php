@@ -1,19 +1,12 @@
 <?php
 session_start();
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '1234');
-define('DB_NAME', 'mydb');
-
+include_once "../../connection.php";
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
   exit;
 }
 $user_id = $_SESSION['user_id'];
-$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
+
 if (isset($_GET['cancel_id'])) {
   $cancel_id = mysqli_real_escape_string($conn, $_GET['cancel_id']);
   $query = "UPDATE order_items SET status='cancelled' WHERE order_id='$cancel_id' AND status='pending'";
