@@ -1,0 +1,14 @@
+admin
+    -home page 
+    -list users 
+        actions => edit and delete 
+    -edit user 
+    -list products 
+        actions =>available ,edit and delete 
+    -edit product
+
+    -checks 
+
+
+for all of us 
+    chaining the pages 
