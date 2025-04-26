@@ -239,3 +239,11 @@ CREATE TABLE `users` (
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
 -- Dump completed on 2025-04-26  3:19:34
+
+ALTER TABLE order_items
+DROP FOREIGN KEY order_items_ibfk_1;
+
+ALTER TABLE order_items
+ADD CONSTRAINT order_items_ibfk_1
+FOREIGN KEY (product_id) REFERENCES products(id)
+ON DELETE CASCADE;
