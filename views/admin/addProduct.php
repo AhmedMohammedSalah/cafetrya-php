@@ -19,6 +19,81 @@
             background-color: #f8f9fc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #1cc88a;
+            --danger-color: #e74a3b;
+            --warning-color: #f6c23e;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-brand {
+            height: 4.375rem;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            letter-spacing: 0.05rem;
+            color: white;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+        
+        .sidebar-item {
+            padding: 0.75rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 0.35rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .sidebar-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s;
+        }
         
         .container {
             max-width: 800px;
@@ -163,6 +238,47 @@
 </head>
 <body>
     <div class="container">
+         <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <a href="#" class="sidebar-brand d-flex align-items-center justify-content-center">
+            <i class="fas fa-store me-2"></i>
+            <span>Admin Panel</span>
+        </a>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="nav flex-column">
+            <a href="index.php" class="sidebar-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            
+            <a href="products.php" class="sidebar-item">
+                <i class="fas fa-box-open"></i>
+                <span>Products</span>
+            </a>
+            
+            <a href="users.php" class="sidebar-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            
+            <a href="manual_order.php" class="sidebar-item active">
+                <i class="fas fa-cart-plus"></i>
+                <span>Manual Order</span>
+            </a>
+            
+            <a href="checks.php" class="sidebar-item">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Checks</span>
+            </a>
+            
+            <a href="unfinshedOrders.php" class="sidebar-item ">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Pending Orders</span>
+            </a>
+        </div>
+    </div>
         <div class="form-container">
             <h2 class="page-title"><i class="fas fa-plus-circle"></i> Add New Product</h2>
             

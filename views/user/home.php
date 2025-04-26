@@ -86,7 +86,7 @@
 <?php 
 include_once(__DIR__ . '/../../models/product.php');
 include_once(__DIR__ . '/../../models/room.php');
-include_once(__DIR__ . '/../connection.php');
+include_once(__DIR__ . '/../../connection.php');
 $allProducts = getAllProducts();
 // $allRooms = getAllRooms();
 ?>

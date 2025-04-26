@@ -1,19 +1,4 @@
-<!-- <?php
-
-// // add product 
-// function addProduct($productName, $image ,$price, $categoryId) {
-//     include_once(__DIR__ . '/../connection.php');
-//     $sql = "INSERT INTO products (productName, image, price, categoryId) VALUES ('$productName', '$image', $price, $categoryId)";
-//     if (mysqli_query($myconnection, $sql)) {
-//         return true;
-//     } else {
-//         return false;
-//     }
-    
-// }
-
-?>
-<?php 
+<?php
 
 // add product 
 function addProduct($productName, $image ,$price, $categoryId) {
@@ -32,6 +17,12 @@ function getProductById($productId) {
     $sql = "SELECT * FROM products WHERE id = $productId";
     $result = mysqli_query($myconnection, $sql);
     return mysqli_fetch_assoc($result);
+}
+function getAllProducts() {
+    include(__DIR__ . '/../connection.php');
+    $sql = "SELECT * FROM products ORDER BY product_name ASC";
+    $result = mysqli_query($myconnection, $sql);
+    return $result;
 }
 
 ?>
