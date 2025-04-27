@@ -2,12 +2,37 @@
 session_start();
 include_once "../../connection.php";
 include_once(__DIR__ .'/../../models/user.php');
+include_once(__DIR__ .'/../../models/product.php');
+
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
-  exit;
+  exit; 
 }
+
+
 $user_id = $_SESSION['user_id'];
 $user=getUserById($user_id);
+
+// Pagination settings
+$itemsPerPage = 6;
+$currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($currentPage - 1) * $itemsPerPage;
+
+// Get total products count
+$allProducts = getAllProducts();
+$totalProducts = mysqli_num_rows($allProducts);
+$totalPages = ceil($totalProducts / $itemsPerPage);
+
+// Get paginated products
+$sql = "SELECT * FROM products ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
+include(__DIR__ . '/../../connection.php');
+$products = mysqli_query($myconnection, $sql);
+
+
+
+
+
+
 
 ?>
 <!DOCTYPE html>
@@ -193,7 +218,6 @@ body {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <?php
-include_once(__DIR__ .'/../../models/product.php');
 include_once(__DIR__ .'/../../models/room.php');
 include_once(__DIR__ .'/../../models/order.php');
 
@@ -407,7 +431,7 @@ if (isset($_POST['addToOrder'])) {
         <?php while($product = mysqli_fetch_assoc($allProducts)): ?>
           <div class="col-md-4 mb-4 mt-2">
             <div class="card">
-              <img src="<?='__DIR__ ./../../admin/'. $product['image'] ?>" alt="product" class="product-image">
+              <img src="<?='__DIR__ ./../../admin'. $product['image'] ?>" alt="product" class="product-image">
               <div class="card-body d-flex flex-column justify-content-between bg-dark">
                 <h6 class="card-title text-light"><?= $product['product_name'] ?></h6>
               </div>
@@ -425,6 +449,38 @@ if (isset($_POST['addToOrder'])) {
         <?php endwhile; ?>
       </div>
     </div>
+    <?php if ($totalPages > 1): ?>
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Page Link -->
+                            <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            
+                            <!-- Page Numbers -->
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            
+                            <!-- Next Page Link -->
+                            <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    
+                    <div class="text-center text-muted">
+                        Showing <?= ($offset + 1) ?> to <?= min($offset + $itemsPerPage, $totalProducts) ?> of <?= $totalProducts ?> products
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
   </div>
 </div>
 </body>
