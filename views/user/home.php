@@ -1,5 +1,14 @@
 <?php
 session_start();
+include_once "../../connection.php";
+include_once(__DIR__ .'/../../models/user.php');
+if (!isset($_SESSION['user_id'])) {
+  header("Location: login.php");
+  exit;
+}
+$user_id = $_SESSION['user_id'];
+$user=getUserById($user_id);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,6 +24,8 @@ session_start();
   --accent-color: #1cc88a;
   --danger-color: #e74a3b;
   --text-color: #343a40;
+  --text-color: #343a40;
+  --title-color:rgb(76, 0, 255);
 }
 
 body {
@@ -192,7 +203,7 @@ if (isset($_POST['add_Order'])) {
     $notes = $_POST['notes'];
     $total = $_POST['total'];
     $room = $_POST['room'];
-    $order_id = addOrder(1, $room, $total, 'pending', $notes);
+    $order_id = addOrder($user_id, $room, $total, 'pending', $notes);
     if ($order_id) {
         if (addOrderItems($order_id)) {
           echo "<div class='modal fade' id='successModal' tabindex='-1' aria-labelledby='successModalLabel' aria-hidden='true'>
@@ -294,9 +305,10 @@ if (isset($_POST['addToOrder'])) {
       <a href="myorder.php">My Orders</a>
     </div>
     <div class="d-flex align-items-center">
-      <span class="me-2">omar khaled</span>
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" alt="User">
-    </div>
+      <span class="me-2 text-light"><?= $user['name'] ?></span>
+      <img src= <?= $user['image'] ?> class="rounded-circle" alt="User">
+        
+      </div>
   </div>
 
   <div class="row">
