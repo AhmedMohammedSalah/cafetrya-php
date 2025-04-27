@@ -1,23 +1,23 @@
 <?php
-// forget-password.php
+
 session_start();
 include_once "../../connection.php";
 $message = "";
 $messageType = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if all required fields are present
+    
     if (isset($_POST['email']) && isset($_POST['new_password']) && isset($_POST['confirm_password'])) {
         $email = mysqli_real_escape_string($myconnection, $_POST['email']);
         $newPassword = $_POST['new_password'];
         $confirmPassword = $_POST['confirm_password'];
         
-        // Verify email exists
+     
         $sql = "SELECT * FROM users WHERE email='$email'";
         $result = mysqli_query($myconnection, $sql);
         
         if (mysqli_num_rows($result) == 1) {
-            // Validate password
+           
             if (strlen($newPassword) < 6) {
                 $message = "Password must be at least 6 characters long.";
                 $messageType = "warning";
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $message = "Passwords do not match.";
                 $messageType = "warning";
             } else {
-                // Update password directly
+                
                 $updateSql = "UPDATE users SET password='$newPassword' WHERE email='$email'";
                 if (mysqli_query($myconnection, $updateSql)) {
                     $message = "Password has been updated successfully. <a href='index.php'>Login now</a>";
