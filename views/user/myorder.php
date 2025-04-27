@@ -1,27 +1,20 @@
 <?php
 session_start();
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '1234');
-define('DB_NAME', 'mydb');
-
+include_once "../../connection.php";
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
   exit;
 }
 $user_id = $_SESSION['user_id'];
-$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
+
 if (isset($_GET['cancel_id'])) {
-  $cancel_id = mysqli_real_escape_string($conn, $_GET['cancel_id']);
+  $cancel_id = mysqli_real_escape_string($myconnection, $_GET['cancel_id']);
   $query = "UPDATE order_items SET status='cancelled' WHERE order_id='$cancel_id' AND status='pending'";
-  $result = mysqli_query($conn, $query);
+  $result = mysqli_query($myconnection, $query);
   if ($result) {
     echo "success";
   } else {
-     echo "Error cancelling order: " . mysqli_error($conn);
+     echo "Error cancelling order: " . mysqli_error($myconnection);
   }
   header("Location: orders.php");
   exit;
@@ -32,11 +25,11 @@ $to = isset($_GET['date_to']) ? $_GET['date_to'] : '';
 $where = "o.user_id = '$user_id'";
 
 if ($from) {
-  $from = mysqli_real_escape_string($conn, $from);
+  $from = mysqli_real_escape_string($myconnection, $from);
   $where .= " AND o.created_at >= '$from 00:00:00'";
 }
 if ($to) {
-  $to = mysqli_real_escape_string($conn, $to);
+  $to = mysqli_real_escape_string($myconnection, $to);
   $where .= " AND o.created_at <= '$to 23:59:59'";
 }
 
@@ -54,9 +47,9 @@ $sql = "
   ORDER BY o.created_at DESC
 ";
 
-$result = mysqli_query($conn, $sql);
+$result = mysqli_query($myconnection, $sql);
 if (!$result) {
-  die("Query failed: " . mysqli_error($conn));
+  die("Query failed: " . mysqli_error($myconnection));
 }
 
 $orders = [];
@@ -65,7 +58,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 
 $user_query = "SELECT name FROM users WHERE id = '$user_id'";
-$user_result = mysqli_query($conn, $user_query);
+$user_result = mysqli_query($myconnection, $user_query);
 $user_name = "";
 if ($user_result && mysqli_num_rows($user_result) > 0) {
   $user_data = mysqli_fetch_assoc($user_result);
@@ -547,11 +540,11 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
                                   FROM order_items oi
                                   JOIN products p ON p.id=oi.product_id
                                   JOIN rooms r ON r.id=oi.room_id
-                                  WHERE oi.order_id='" . mysqli_real_escape_string($conn, $o['id']) . "'";
-                    $item_result = mysqli_query($conn, $item_query);
+                                  WHERE oi.order_id='" . mysqli_real_escape_string($myconnection, $o['id']) . "'";
+                    $item_result = mysqli_query($myconnection, $item_query);
                     
                     if (!$item_result) {
-                      echo "<tr><td colspan='5'>Error loading order details: " . mysqli_error($conn) . "</td></tr>";
+                      echo "<tr><td colspan='5'>Error loading order details: " . mysqli_error($myconnection) . "</td></tr>";
                     } else {
                       while($item = mysqli_fetch_assoc($item_result)):
                   ?>
@@ -649,5 +642,5 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
 </body>
 </html>
 <?php
-mysqli_close($conn);
+mysqli_close($myconnection);
 ?>
