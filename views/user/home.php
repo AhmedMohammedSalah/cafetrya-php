@@ -1,14 +1,15 @@
 <?php
 session_start();
 include_once "../../connection.php";
-$id=$_SESSION['user_id'];
-if(!isset($id)){
-    header("location:login.php");
-    exit;
+include_once(__DIR__ .'/../../models/user.php');
+if (!isset($_SESSION['user_id'])) {
+  header("Location: login.php");
+  exit;
 }
+$user_id = $_SESSION['user_id'];
+$user=getUserById($user_id);
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,123 +18,382 @@ if(!isset($id)){
   <title>Home Page</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .cup-icon {
-      font-size: 50px;
-    }
-    .combo-box {
-      width: 100%;
-    }
-    .product-image {
-      height: 50px;
-      object-fit: contain;
-    }
-        .cards-container {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto; 
-    }
-    .cards-container {
+   :root {
+  --primary-color: #4e73df;
+  --secondary-color: #f8f9fc;
+  --accent-color: #1cc88a;
+  --danger-color: #e74a3b;
+  --text-color: #343a40;
+  --text-color: #343a40;
+  --title-color:rgb(76, 0, 255);
+}
 
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
-    column-gap: 60px;
-    
-    row-gap : 40px;
-    padding: 20px;
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--secondary-color);
+}
 
-    
+.header {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
 
-    }
+.header a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: bold;
+  margin-right: 20px;
+  transition: color 0.3s ease;
+}
 
-    .card {
-    background: transparent !important;
-    width: 200px !important;
-    height: 330px !important;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    background-color: rgb(36, 36, 36);
-    border-radius: 12px;
-    overflow: hidden;
-    color: white !important;
-    transition: transform 0.3s ease;
-    }
+.header a:hover {
+  color: var(--accent-color);
+}
 
-    .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(3, 4, 32, 0.6);
+.header .user-info {
+  display: flex;
+  align-items: center;
+}
 
-    }
+.header .user-info img {
+  border-radius: 50%;
+  margin-left: 10px;
+  width: 35px;
+  height: 35px;
+  border: 2px solid var(--accent-color);
+}
+.rounded-circle{
+  width: 50px;
+  height: 50px;
+}
 
-    .card-image {
-    width: 100%;
-    height:200px;
-    object-fit: cover;
-    }
+.card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 20px;
+  width: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+}
 
-    .card-footer {
-    position:  relative;
-    width: 100%;
-    height: 0px;
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
 
-    color: rgb(0, 0, 0) !important;
-    padding: 10px;
-    box-sizing: border-box;
+.card .card-footer {
+  background-color: var(--secondary-color);
+  border-top: 1px solid #e3e6f0;
+  text-align: center;
+  padding: 10px;
+}
 
-    bottom: 0;
-    }
+.card .card-footer p {
+  margin: 0;
+  font-weight: bold;
+}
 
-    .card-title {
-    margin: 0;
-    font-size: 18px;
-    font-family: sans-serif;
-    }
+.card .card-footer .btn {
+  margin-top: 5px;
+}
+
+.product-image {
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.cart-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item strong {
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.cart-item .badge {
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+.cart-total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-align: center;
+  margin-top: 15px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #375a7f;
+  transform: scale(1.05);
+}
+
+.btn-outline-secondary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  color: var(--secondary-color);
+  background-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header a {
+    margin: 5px 0;
+  }
+
+  .cart-item {
+    flex-direction: column;
+  }
+
+  .cart-item strong,
+  .cart-item .badge {
+    margin-bottom: 10px;
+  }
+}
   </style>
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+<?php
+include_once(__DIR__ .'/../../models/product.php');
+include_once(__DIR__ .'/../../models/room.php');
+include_once(__DIR__ .'/../../models/order.php');
 
-<?php 
-include_once(__DIR__ . '/../../models/product.php');
-include_once(__DIR__ . '/../../models/room.php');
-include_once(__DIR__ . '/../../connection.php');
-$allProducts = getAllProducts();
-// $allRooms = getAllRooms();
+$allProducts = getAllAvaliableProducts();
+$allRooms = getAllRooms();
+if (isset($_POST['add_Order'])) {
+    $notes = $_POST['notes'];
+    $total = $_POST['total'];
+    $room = $_POST['room'];
+    $order_id = addOrder($user_id, $room, $total, 'pending', $notes);
+    if ($order_id) {
+        if (addOrderItems($order_id)) {
+          echo "<div class='modal fade' id='successModal' tabindex='-1' aria-labelledby='successModalLabel' aria-hidden='true'>
+          <div class='modal-dialog modal-dialog-centered'>
+            <div class='modal-content'>
+              <div class='modal-header bg-success text-white'>
+                <h5 class='modal-title' id='successModalLabel'>Success</h5>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+              </div>
+              <div class='modal-body'>
+                Your order has been placed successfully!
+              </div>
+              <div class='modal-footer'>
+                <button type='button' class='btn btn-success' data-bs-dismiss='modal'>OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+          });
+        </script>"; 
+        unset($_SESSION['cart']);
+        } else {
+          echo "<div class='modal fade' id='failureModal' tabindex='-1' aria-labelledby='failureModalLabel' aria-hidden='true'>
+          <div class='modal-dialog modal-dialog-centered'>
+            <div class='modal-content'>
+              <div class='modal-header bg-danger text-white'>
+                <h5 class='modal-title' id='failureModalLabel'>Error</h5>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+              </div>
+              <div class='modal-body'>
+                There was an issue adding your items to the order. Please try again.
+              </div>
+              <div class='modal-footer'>
+                <button type='button' class='btn btn-danger' data-bs-dismiss='modal'>OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              const failureModal = new bootstrap.Modal(document.getElementById('failureModal'));
+              failureModal.show();
+          });
+        </script>";  }
+    }
+}
+
+if (isset($_POST['update_quantity'])) {
+    list($action, $index) = explode('_', $_POST['update_quantity']);
+    if (isset($_SESSION['cart'][$index])) {
+        if ($action == 'increase' && $_SESSION['cart'][$index]['quantity'] < 10) {
+            $_SESSION['cart'][$index]['quantity']++;
+        } elseif ($action == 'decrease') {
+            if ($_SESSION['cart'][$index]['quantity'] > 1) {
+                $_SESSION['cart'][$index]['quantity']--;
+            } else {
+                array_splice($_SESSION['cart'], $index, 1);
+            }
+        }
+    }
+}
+
+if (isset($_POST['addToOrder'])) {
+    if (isset($_POST['productId'])) {
+        $productId = $_POST['productId'];
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+        $found = false;
+        foreach ($_SESSION['cart'] as &$item) {
+            if ($item['id'] == $productId) {
+                $item['quantity'] += 1;
+                $found = true;
+                break;
+            }
+        }
+        unset($item);
+        if (!$found) {
+            $_SESSION['cart'][] = [
+                'id' => $productId,
+                'quantity' => 1
+            ];
+        }
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit();
+    }
+}
 ?>
 
 <body class="p-3">
 <div class="container-fluid">
-  <!-- Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4 bg-dark">
+  <div class="header d-flex justify-content-between align-items-center">
     <div>
-      <a href="#">Home</a> |
-      <a href="#">My Orders</a>
+      <a href="home.php">Home</a> |
+      <a href="myorder.php">My Orders</a>
     </div>
     <div class="d-flex align-items-center">
-      <span class="me-2">omar khaled</span>
-      <img src="https://via.placeholder.com/30" class="rounded-circle" alt="User">
-    </div>
+      <span class="me-2 text-light"><?= $user['name'] ?></span>
+      <img src= <?= $user['image'] ?> class="rounded-circle" alt="User">
+        
+      </div>
   </div>
+
   <div class="row">
-  <div class="col-md-4">
-  <div class="border p-3 mb-3">
-    
-    <div id="cart-items" class="mb-3"></div>
 
-    <div class="mb-2">
-      <label for="notes" class="form-label">Notes</label>
-      <textarea id="notes" class="form-control" rows="2" placeholder="e.g. Extra sugar..."></textarea>
+    <div class="col-md-4 ">
+      <form class="border p-3 mb-3" method="POST">
+        <div id="cart-items" class="mb-3">
+          <?php if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
+            <h5 class="mb-4 text-dark fs-2 ">Your Cart:</h5>
+            <div class="list-group mb-3">
+              <?php foreach ($_SESSION['cart'] as $index => $item): ?>
+                <?php
+                  $product = getProductById((int)$item['id']);
+                ?>
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong class="text-primary fs-4"><?= $product['product_name'] ?></strong><br>
+                    <strong class="text-dark fs-5 pt-3">  Price:</strong> <strong class="text-success fs-5"><?= $product['price'] ?> LE<br> </strong>
+                    <div class="d-flex align-items-center pt-3">
+                      <button type="submit" name="update_quantity" value="decrease_<?= $index ?>" class="btn btn-sm btn-outline-secondary">-</button>
+                      <span class="mx-2"><?= $item['quantity'] ?></span>
+                      <button type="submit" name="update_quantity" value="increase_<?= $index ?>" class="btn btn-sm btn-outline-secondary">+</button>
+                    </div>
+                  </div>
+                  <span class="badge bg-primary rounded-pill fs-5"><?= $product['price'] * $item['quantity'] ?> LE</span>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php else: ?>
+        <div class="text-center my-5">
+          <p class="text-primary fs-4">
+            <i class="fas fa-shopping-cart me-2"></i>
+            Your cart is empty.
+          </p>
+          </div>
+          <?php endif; ?>
+        </div>
+
+        <div class="mb-2">
+          <label for="room" class="form-label">Room</label>
+          <select id="room" name="room" class="form-select combo-box">
+            <?php while($room = mysqli_fetch_assoc($allRooms)): ?>
+              <option value="<?= $room['id'] ?>"><?= $room['room_name'] ?></option>
+            <?php endwhile; ?>
+          </select>
+        </div>
+
+        <div class="mb-2">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea id="notes" name="notes" class="form-control" rows="2" placeholder="e.g. Extra sugar..."></textarea>
+        </div>
+
+        <?php
+          function calculateCartTotal() {
+              $subtotal = 0;
+              if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
+                  foreach ($_SESSION['cart'] as $item) {
+                      $product = getProductById((int)$item['id']);
+                      if ($product && isset($product['price'])) {
+                          $subtotal += $product['price'] * $item['quantity'];
+                      }
+                  }
+              }
+              return $subtotal;
+          }
+
+          $total = calculateCartTotal();
+        ?>
+
+        <div class="mb-3 fw-bold" id="cart-total">
+          <?php
+            if ($total > 0) {
+                echo "EGP " . number_format($total, 2);
+            } else {
+                echo "EGP 0.00";
+            }
+          ?>
+        </div>
+
+        <input type="hidden" name="total" value="<?= $total ?>">
+        <button type="submit" name="add_Order" class="btn btn-primary w-100">Confirm</button>
+      </form>
     </div>
 
-    <div class="mb-3 fw-bold" id="cart-total">EGP 0</div>
-
-    <button class="btn btn-primary w-100">Confirm</button>
-  </div>
-</div>
-
-
-    <div class="col-md-8">
+    <div class="col-md-8 mt-3">
       <h5>Latest Order</h5>
       <div class="d-flex gap-3 mb-3">
         <div class="card text-center" style="width: 6rem;">
@@ -141,138 +401,31 @@ $allProducts = getAllProducts();
             <h6 class="card-title mb-0">Tea</h6>
           </div>
         </div>
-       
       </div>
-<br>
-<hr>
 
-    <div class="row">
-  <?php while($product = mysqli_fetch_assoc($allProducts)): ?>
-    <div class="col-md-4 mb-4">
-      <div class="card">
-        <img src="<?= $product['image'] ?>" alt="product" class="card-image">
-        <div class="card-body d-flex flex-column justify-content-between bg-dark">
-          <h6 class="card-title text-light"><?= $product['product_name'] ?></h6>
-        </div>
-        <div class="card-footer d-flex justify-content-between align-items-center mt-2 mb-2">
-          <p class="text-primary mb-0 card-title mt-2 mb-2 "><?= $product['price'] ?> LE</p>
-          <button 
-            class="btn btn-outline-primary btn-sm add" 
-            data-id="<?= $product['id'] ?>" 
-            data-name="<?= $product['product_name'] ?>" 
-            data-price="<?= $product['price'] ?>"
-          >
-            <i class="fa-solid fa-cart-shopping"></i>
-          </button>
-        </div>
+      <div class="row">
+        <?php while($product = mysqli_fetch_assoc($allProducts)): ?>
+          <div class="col-md-4 mb-4 mt-2">
+            <div class="card">
+              <img src="<?='__DIR__ ./../../admin/'. $product['image'] ?>" alt="product" class="product-image">
+              <div class="card-body d-flex flex-column justify-content-between bg-dark">
+                <h6 class="card-title text-light"><?= $product['product_name'] ?></h6>
+              </div>
+              <div class="card-footer d-flex justify-content-between align-items-center mt-2 mb-2">
+                <p class="text-primary mb-0 card-title mt-2 mb-2"><?= $product['price'] ?> LE</p>
+                <form method="POST">
+                  <input type="hidden" name="productId" value="<?= $product['id'] ?>">
+                  <button type="submit" name="addToOrder" class="btn btn-outline-primary btn-sm add" data-id="<?= $product['id'] ?>" data-name="<?= $product['product_name'] ?>" data-price="<?= $product['price'] ?>">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        <?php endwhile; ?>
       </div>
     </div>
-  <?php endwhile; ?>
-</div>
-
-
-    
-    
   </div>
 </div>
-<script>
-  const cart = [];
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const addButtons = document.querySelectorAll('.add');
-
-    addButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const id = button.getAttribute('data-id');
-        const name = button.getAttribute('data-name');
-        const price = parseFloat(button.getAttribute('data-price'));
-        const quantity=0;
-        if(cart.include(id)){
-            quantity++;
-        }
-
-        const product = { id, name, price ,quantity};
-        cart.push(product);
-        console.log('Cart:', cart);
-      });
-    });
-  });
-  
-  function updateCartUI() {
-    const cartItemsContainer = document.getElementById('cart-items');
-    const cartTotalDisplay = document.getElementById('cart-total');
-
-    cartItemsContainer.innerHTML = '';
-    let total = 0;
-
-    cart.forEach(item => {
-      total += item.price * item.quantity;
-
-      const itemDiv = document.createElement('div');
-      itemDiv.classList.add('d-flex', 'justify-content-between', 'mb-2');
-
-      itemDiv.innerHTML = `
-        <div>${item.name}</div>
-        <div>
-          <button class="btn btn-sm btn-secondary decrease" data-id="${item.id}">-</button>
-          <span class="mx-2">${item.quantity}</span>
-          <button class="btn btn-sm btn-secondary increase" data-id="${item.id}">+</button>
-        </div>
-        <div>EGP ${item.price * item.quantity}</div>
-      `;
-
-      cartItemsContainer.appendChild(itemDiv);
-    });
-
-    cartTotalDisplay.textContent = `EGP ${total}`;
-  }
-
-  function findCartItem(id) {
-    return cart.find(item => item.id === id);
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const addButtons = document.querySelectorAll('.add');
-
-    addButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const id = button.getAttribute('data-id');
-        const name = button.getAttribute('data-name');
-        const price = parseFloat(button.getAttribute('data-price'));
-
-        let item = findCartItem(id);
-
-        if (item) {
-          item.quantity += 1;
-        } else {
-          cart.push({ id, name, price, quantity: 1 });
-        }
-
-        updateCartUI();
-      });
-    });
-
-    document.getElementById('cart-items').addEventListener('click', (e) => {
-      if (e.target.classList.contains('increase') || e.target.classList.contains('decrease')) {
-        const id = e.target.getAttribute('data-id');
-        const item = findCartItem(id);
-
-        if (item) {
-          if (e.target.classList.contains('increase')) {
-            item.quantity += 1;
-          } else if (e.target.classList.contains('decrease') && item.quantity > 1) {
-            item.quantity -= 1;
-          } else if (item.quantity === 1) {
-            const index = cart.findIndex(i => i.id === id);
-            cart.splice(index, 1);
-          }
-
-          updateCartUI();
-        }
-      }
-    });
-  });
-</script>
-
 </body>
 </html>

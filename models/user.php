@@ -16,4 +16,5 @@ function addUser($name, $password, $email,$image,$age , $room_id) {
         return false;
     }
 }
+
 ?>

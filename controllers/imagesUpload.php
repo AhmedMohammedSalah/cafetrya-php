@@ -3,7 +3,8 @@ function imageUpload() {
     if (!isset($_FILES['image'])) {
         return false;
     }
-    $uploadDir = './uploads/';
+    $uploadDir = __DIR__ . '/views/uploads/';
+    // $uploadDir = './uploads/';
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     $maxSize = 2 * 1024 * 1024;
 

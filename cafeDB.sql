@@ -55,6 +55,7 @@ VALUES (1, 1, 0.00, 'pending');
 CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
+    product_name VARCHAR(250) NOT NULL,
     room_id INT,
     order_id INT,
     quantity INT NOT NULL DEFAULT 1,

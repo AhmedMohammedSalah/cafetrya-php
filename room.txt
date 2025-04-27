@@ -1,9 +1,0 @@
-
-        <div class="mb-2">
-            <label for="room" class="form-label">Room</label>
-            <select id="room" name="room" class="form-select combo-box">
-            <?php while($room = mysqli_fetch_assoc($allRooms)): ?>
-            <option value="<?= $room['id'] ?>"><?= $room['room_name'] ?></option>
-            <?php endwhile; ?>
-        </select>
-        </div>

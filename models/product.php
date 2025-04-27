@@ -1,6 +1,4 @@
 <?php
-
-// add product 
 function addProduct($productName, $image ,$price, $categoryId) {
 
     $sql = "INSERT INTO products (product_name, image, price, category_id) VALUES ('$productName', '$image', $price, $categoryId)";
@@ -21,6 +19,12 @@ function getProductById($productId) {
 function getAllProducts() {
     include(__DIR__ . '/../connection.php');
     $sql = "SELECT * FROM products ORDER BY product_name ASC";
+    $result = mysqli_query($myconnection, $sql);
+    return $result;
+}
+function getAllAvaliableProducts() {
+    include(__DIR__ . '/../connection.php');
+    $sql = "SELECT * FROM products  WHERE availability=1 ORDER BY product_name ASC";
     $result = mysqli_query($myconnection, $sql);
     return $result;
 }
