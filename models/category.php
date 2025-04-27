@@ -21,4 +21,11 @@
         }
         return $categories;
     }
+    // get category by id
+    function getCategoryById($categoryId) {
+        include(__DIR__ . '/../connection.php');
+        $sql = "SELECT * FROM categories WHERE id = $categoryId";
+        $result = mysqli_query($myconnection, $sql);
+        return mysqli_fetch_assoc($result);
+    }
 ?>
