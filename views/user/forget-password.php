@@ -48,7 +48,7 @@ mysqli_close($myconnection);
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
-      background: linear-gradient(to right, #74ebd5, #acb6e5);
+      background: rgb(113, 80, 36);
       height: 100vh;
       margin: 0;
       display: flex;
@@ -93,7 +93,7 @@ mysqli_close($myconnection);
       transition: 0.3s;
     }
     .form-control:focus {
-      border-color: #007bff;
+      border-color: #rgb(113, 80, 36);
       box-shadow: 0 0 0 4px rgba(0,123,255,0.1);
     }
     .is-invalid {
@@ -114,12 +114,12 @@ mysqli_close($myconnection);
       height: 50px;
       border-radius: 12px;
       font-weight: 500;
-      background-color: #007bff;
+      background-color: #rgb(113, 80, 36);
       border: none;
       transition: background-color 0.3s ease;
     }
     .btn-reset:hover {
-      background-color: #0056b3;
+      background-color: rgb(113, 80, 36);
     }
     .back-link {
       display: block;

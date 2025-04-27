@@ -12,7 +12,7 @@
     }
 
     .navbar-custom {
-      background: linear-gradient(90deg, #00b4db, #0083b0);
+      background: linear-gradient(90deg, rgb(113, 80, 36);, rgb(110, 75, 30););
       padding: 10px 0;
       height: 70px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -96,7 +96,7 @@
     }
 
     .btn-coffee {
-      background: #0083b0;
+      background: rgb(113, 80, 36);
       color: white;
       border-radius: 8px;
       padding: 8px 20px;
@@ -104,18 +104,18 @@
     }
 
     .btn-coffee:hover {
-      background: #0072a0;
+      background:rgb(113, 80, 36);
       color: white;
     }
 
     .page-item.active .page-link {
-      background-color: #0083b0;
-      border-color: #0083b0;
+      background-color: rgb(113, 80, 36);
+      border-color:rgb(113, 80, 36);
       border-radius: 8px;
     }
 
     .page-link {
-      color: #0083b0;
+      color:rgb(113, 80, 36);
     }
 
     .search-box {
@@ -128,11 +128,11 @@
     }
 
     #search-input {
-      border-color: #0083b0;
+      border-color: rgb(113, 80, 36);
     }
 
     #search-input:focus {
-      border-color: #0083b0;
+      border-color:rgb(113, 80, 36);
       box-shadow: 0 0 0 0.25rem rgba(0, 131, 176, 0.25);
     }
 
