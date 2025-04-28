@@ -3,7 +3,7 @@ function imageUpload() {
     if (!isset($_FILES['image'])) {
         return false;
     }
-    $uploadDir = __DIR__ . '/views/uploads/';
+    $uploadDir = __DIR__ .'/uploads/';
     // $uploadDir = './uploads/';
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     $maxSize = 2 * 1024 * 1024;
@@ -39,7 +39,7 @@ function userImageUpload() {
     if (!isset($_FILES['image'])) {
         return false;
     }
-    $uploadDir = __DIR__.'/../views/user/images/uploads/';
+    $uploadDir = __DIR__.'/uploads/user/';
     // $uploadDir = './uploads/';
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     $maxSize = 2 * 1024 * 1024;
