@@ -2,6 +2,7 @@
 session_start();
 include_once "../../connection.php";
 include_once(__DIR__ .'/../../models/product.php');
+include_once(__DIR__ .'/../../models/category.php');
 $itemsPerPage = 6;
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $offset = ($currentPage - 1) * $itemsPerPage;
@@ -11,6 +12,8 @@ $totalProducts = mysqli_num_rows($allProducts);
 $totalPages = ceil($totalProducts / $itemsPerPage);
 $sql = "SELECT * FROM products WHERE availability=1 ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
 $products = mysqli_query($myconnection, $sql);
+$allCategories=getCategories();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -355,6 +358,7 @@ if (isset($_POST['addToOrder'])) {
         exit();
     }
 }
+
 ?>
 <body class="p-3">
 <div class="d-flex">
@@ -487,6 +491,27 @@ if (isset($_POST['addToOrder'])) {
           </div>
         </div>
       </div> -->
+      <div class="filter-form content-center mb-3">
+      <form class="row g-3 align-items-end" method="POST">  
+      <div class="mb-2">
+          <label for="category" class="form-label fs-5 fw-bold">Filter With Category</label>
+          <select id="category" name="category" class="form-select combo-box">
+            <?php foreach($allCategories as $index=>$item): ?>
+              <option value="<?= $item['id'] ?>"><?= $item['category_name'] ?></option>
+              <?php endforeach; ?>
+          </select>
+        </div>
+
+        <div class="col-md-4 col-sm-12 d-flex gap-2">
+          <button type="submit" name="filter" class="btn btn-primary flex-grow-1" >
+            <i class="fas fa-filter me-2"></i>Filter
+          </button>
+          <a href="home.php" class="btn btn-outline-secondary flex-grow-1">
+            <i class="fas fa-redo me-2"></i>Reset
+          </a>
+        </div>
+      </form>
+    </div>
 
       <div class="row">
         <?php while($product = mysqli_fetch_assoc($products)): ?>
@@ -545,6 +570,7 @@ if (isset($_POST['addToOrder'])) {
   </div>
 </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const sidebar = document.querySelector('.sidebar');

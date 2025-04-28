@@ -3,6 +3,7 @@ session_start();
 include_once "../../connection.php";
 include_once(__DIR__ .'/../../models/user.php');
 include_once(__DIR__ .'/../../models/product.php');
+include_once(__DIR__ .'/../../models/category.php');
 
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
@@ -27,8 +28,7 @@ $totalPages = ceil($totalProducts / $itemsPerPage);
 $sql = "SELECT * FROM products WHERE availability=1 ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
 include(__DIR__ . '/../../connection.php');
 $products = mysqli_query($myconnection, $sql);
-
-
+$allCategories=getCategories();
 
 ?>
 <!DOCTYPE html>
@@ -313,10 +313,16 @@ if (isset($_POST['addToOrder'])) {
         exit();
     }
 }
+// if (isset($_POST['filter'])) {
+//   $category_id = $_POST['category'];
+//  $products=getProductsByCategory();
+// }
+
+
+
 ?>
 
 <body class="p-3">
-<div class="container-fluid">
 <div class="header d-flex justify-content-between align-items-center p-2">
     <div class="d-flex align-items-center">
     <a class="navbar-brand" href="home.php">
@@ -341,14 +347,12 @@ if (isset($_POST['addToOrder'])) {
     <a class="dropdown-item text-danger">Log Out</a>
                   </button> </form></li>
 
-
     </ul>
   </div>
 </div>
+<div class="container-fluid py-5">
 
-
-
-  <div class="row">
+  <div class="row" >
 
     <div class="col-md-4 ">
       <form class="border p-3 mb-3" method="POST">
@@ -424,7 +428,6 @@ if (isset($_POST['addToOrder'])) {
             }
           ?>
         </div>
-
         <input type="hidden" name="total" value="<?= $total ?>">
         <button type="submit" name="add_Order" class="btn btn-primary w-100">Confirm</button>
       </form>
@@ -439,6 +442,27 @@ if (isset($_POST['addToOrder'])) {
           </div>
         </div>
       </div> -->
+      <div class="filter-form content-center mb-3">
+      <form class="row g-3 align-items-end" method="POST">  
+      <div class="mb-2">
+          <label for="category" class="form-label fs-5 fw-bold">Filter With Category</label>
+          <select id="category" name="category" class="form-select combo-box">
+            <?php foreach($allCategories as $index=>$item): ?>
+              <option value="<?= $item['id'] ?>"><?= $item['category_name'] ?></option>
+              <?php endforeach; ?>
+          </select>
+        </div>
+
+        <div class="col-md-4 col-sm-12 d-flex gap-2">
+          <button type="submit" name="filter" class="btn btn-primary flex-grow-1" >
+            <i class="fas fa-filter me-2"></i>Filter
+          </button>
+          <a href="home.php" class="btn btn-outline-secondary flex-grow-1">
+            <i class="fas fa-redo me-2"></i>Reset
+          </a>
+        </div>
+      </form>
+    </div>
 
       <div class="row">
         <?php while($product = mysqli_fetch_assoc($products)): ?>

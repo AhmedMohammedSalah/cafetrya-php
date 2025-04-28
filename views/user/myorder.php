@@ -1,11 +1,14 @@
 <?php
 session_start();
 include_once "../../connection.php";
+include_once(__DIR__ .'/../../models/user.php');
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
   exit;
 }
 $user_id = $_SESSION['user_id'];
+
+$user=getUserById($user_id);
 
 if (isset($_GET['cancel_id'])) {
   $cancel_id = mysqli_real_escape_string($myconnection, $_GET['cancel_id']);
@@ -88,6 +91,7 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
   <style>
     :root {
       --primary:rgb(82, 148, 176);
+      --primary-color: #4e73df;
       --primary-dark: rgb(82, 148, 176);
       --secondary:rgb(95, 56, 10);
       --secondary-light:rgb(81, 51, 10);
@@ -101,6 +105,16 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
       --warning:rgb(100, 65, 12);
       --danger: #f44336;
       --info: #2196F3;
+    }
+    .header {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
     }
     
     body {
@@ -435,11 +449,38 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
       .table th, .table td {
         padding: 12px 16px;
       }
+ 
+
     }
   </style>
 </head>
-<body>
- 
+<body class="p-3">
+<div class="header d-flex justify-content-between align-items-center p-2">
+    <div class="d-flex align-items-center text-light">
+    <a class="navbar-brand " href="home.php">
+    <i class="fa-solid fa-mug-saucer fs-3  p-2 text-light"> Café Delight
+    </i>   <div>
+    </a> 
+      <a href="home.php" class="text-light p-3">Home</a> |
+      <a href="myorder.php" class="text-light">My Orders</a>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <div class="d-flex align-items-center" data-bs-toggle="dropdown" style="cursor: pointer;">
+      <span class="me-2 text-light">
+        <div>Hi!</div><?= $user['name'] ?>
+      </span>
+      <img src="<?= $user['image']?>" class="rounded-circle" alt="User" width="40" height="40">
+    </div>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class="dropdown-item text-danger">Log Out</a>
+                 </button> </form></li>
+    </ul>
+  </div>
+</div>
   <div class="container py-5">
     <div class="page-header">
       <h1>My Orders</h1>
