@@ -123,6 +123,35 @@ mysqli_close($myconnection);
   </style>
 </head>
 <body>
+
+<div class="header d-flex justify-content-between align-items-center p-2">
+    <div class="d-flex align-items-center">
+    <a class="navbar-brand" href="home.php">
+    <i class="fa-solid fa-mug-saucer fs-3  p-2"> Café Delight
+    </i>   <div>
+    </a> 
+      <a href="home.php">Home</a> |
+      <a href="myorder.php">My Orders</a>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <div class="d-flex align-items-center" data-bs-toggle="dropdown" style="cursor: pointer;">
+      <span class="me-2 text-light">
+        <div>Hi!</div><?= $user['name'] ?>
+      </span>
+      <img src="<?= $user['image']?>" class="rounded-circle" alt="User" width="40" height="40">
+    </div>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class="dropdown-item text-danger">Log Out</a>
+                  </button> </form></li>
+
+    </ul>
+  </div>
+</div>
+
 <form class="form-container" method="POST" action="" id="loginForm">
   <h1>Cafeteria Login</h1>
   <div class="form-group mb-4">
