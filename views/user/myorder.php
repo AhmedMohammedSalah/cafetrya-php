@@ -87,8 +87,8 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary:rgb(82, 148, 176);
-      --primary-dark: rgb(82, 148, 176);
+      --primary: rgb(113, 80, 36);
+      --primary-dark:  rgb(113, 80, 36);
       --secondary:rgb(95, 56, 10);
       --secondary-light:rgb(81, 51, 10);
       --light-bg: #f9f7ff;
@@ -100,7 +100,7 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
       --success:rgb(70, 196, 74);
       --warning:rgb(100, 65, 12);
       --danger: #f44336;
-      --info: #2196F3;
+      --info:  rgb(113, 80, 36);
     }
     
     body {
