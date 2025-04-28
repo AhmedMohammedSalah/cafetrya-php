@@ -7,7 +7,7 @@ $success = false;
 // Include necessary files
 include_once(__DIR__ . '/../../models/user.php');
 include_once(__DIR__ . '/../../models/room.php');
-include_once(__DIR__ . '/../../controllers/imagesUpload.php');
+include_once(__DIR__ . '/../admin/imagesUpload.php');
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     if (empty($_FILES['image']['name'])) {
         $errors['image'] = 'Profile image is required';
     } else {
-        $uploadResult = imageUpload();
+        $uploadResult = userImageUpload();
         if ($uploadResult !== false) {
             $image = $uploadResult;
         } else {
