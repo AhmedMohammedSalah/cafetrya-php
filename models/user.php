@@ -16,5 +16,11 @@ function addUser($name, $password, $email,$image,$age , $room_id) {
         return false;
     }
 }
+function getAllUsers() {
+    $sql = "SELECT * FROM users ORDER BY name";
+    include(__DIR__ . '/../connection.php');
+    $result = mysqli_query($myconnection, $sql);
+    return $result;
+}
 
 ?>

@@ -1,22 +1,7 @@
 <?php
 session_start();
 include_once "../../connection.php";
-include_once(__DIR__ .'/../../models/user.php');
 include_once(__DIR__ .'/../../models/product.php');
-
-if (!isset($_SESSION['user_id'])) {
-  header("Location: login.php");
-  exit; 
-}
-
-if (isset($_POST['logout'])) {
-  session_destroy();
-  header("Location: login.php");
-}
-
-$user_id = $_SESSION['user_id'];
-$user=getUserById($user_id);
-
 $itemsPerPage = 6;
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $offset = ($currentPage - 1) * $itemsPerPage;
@@ -25,18 +10,14 @@ $allProducts = getAllAvaliableProducts();
 $totalProducts = mysqli_num_rows($allProducts);
 $totalPages = ceil($totalProducts / $itemsPerPage);
 $sql = "SELECT * FROM products WHERE availability=1 ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
-include(__DIR__ . '/../../connection.php');
 $products = mysqli_query($myconnection, $sql);
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home Page</title>
+  <title>add Order Page</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
    :root {
@@ -53,6 +34,60 @@ body {
   font-family: 'Nunito', sans-serif;
   background-color: var(--secondary-color);
 }
+.sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-brand {
+            height: 4.375rem;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            letter-spacing: 0.05rem;
+            color: white;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+        
+        .sidebar-item {
+            padding: 0.75rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 0.35rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .sidebar-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
 
 .header {
   background-color: var(--primary-color);
@@ -173,7 +208,10 @@ body {
   border: none;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
-
+.container-fluid {
+  margin-left: 250px; /* Same as sidebar width */
+  width: calc(100% - 250px);
+}
 .btn-primary:hover {
   background-color: #375a7f;
   transform: scale(1.05);
@@ -216,11 +254,16 @@ body {
 <?php
 include_once(__DIR__ .'/../../models/room.php');
 include_once(__DIR__ .'/../../models/order.php');
+include_once(__DIR__ .'/../../models/user.php');
+
 $allRooms = getAllRooms();
+$allUsers=getAllUsers();
+
 if (isset($_POST['add_Order'])) {
     $notes = $_POST['notes'];
     $total = $_POST['total'];
     $room = $_POST['room'];
+    $user_id = $_POST['user'];
     $order_id = addOrder($user_id, $room, $total, 'pending', $notes);
     if ($order_id) {
         if (addOrderItems($order_id)) {
@@ -287,7 +330,6 @@ if (isset($_POST['update_quantity'])) {
         }
     }
 }
-
 if (isset($_POST['addToOrder'])) {
     if (isset($_POST['productId'])) {
         $productId = $_POST['productId'];
@@ -309,52 +351,50 @@ if (isset($_POST['addToOrder'])) {
                 'quantity' => 1
             ];
         }
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        echo '<script>window.location.href="'.$_SERVER['PHP_SELF'].'";</script>';
         exit();
     }
 }
 ?>
-
 <body class="p-3">
+<div class="d-flex">
+  
+  <div class="sidebar bg-light p-3" style="width: 250px; min-height: 100vh;">
+    <a href="#" class="sidebar-brand d-flex align-items-center justify-content-center mb-4">
+      <i class="fas fa-store me-2"></i>
+      <span>Admin Panel</span>
+    </a>
+    <div class="sidebar-divider"></div>
+    <div class="nav flex-column">
+      <a href="home.php" class="sidebar-item mb-2">
+        <i class="fas fa-home"></i> <span>Home</span>
+      </a>
+      <a href="listProducts.php" class="sidebar-item mb-2">
+        <i class="fas fa-box-open"></i> <span>Products</span>
+      </a>
+      <a href="users.php" class="sidebar-item mb-2">
+        <i class="fas fa-users"></i> <span>Users</span>
+      </a>
+      <a href="checks.php" class="sidebar-item mb-2">
+        <i class="fas fa-file-invoice-dollar"></i> <span>Checks</span>
+      </a>
+      <a href="unfinshedOrders.php" class="sidebar-item mb-2">
+        <i class="fas fa-clipboard-list"></i> <span>Pending Orders</span>
+      </a>
+      <a href="addOrder.php" class="sidebar-item mb-2">
+        <i class="fa-solid fa-cart-shopping"></i> <span>Manual Orders</span>
+      </a>
+    </div>
+  </div>
+
 <div class="container-fluid">
-<div class="header d-flex justify-content-between align-items-center p-2">
-    <div class="d-flex align-items-center">
-    <a class="navbar-brand" href="home.php">
-    <i class="fa-solid fa-mug-saucer fs-3  p-2"> Café Delight
-    </i>   <div>
-    </a> 
-      <a href="home.php">Home</a> |
-      <a href="myorder.php">My Orders</a>
-    </div>
-  </div>
-
-  <div class="dropdown">
-    <div class="d-flex align-items-center" data-bs-toggle="dropdown" style="cursor: pointer;">
-      <span class="me-2 text-light">
-        <div>Hi!</div><?= $user['name'] ?>
-      </span>
-      <img src="<?= $user['image']?>" class="rounded-circle" alt="User" width="40" height="40">
-    </div>
-    <ul class="dropdown-menu dropdown-menu-end">
-      <li><form method="POST">  
-      <button type="submit" class="bg-light" style="border:none;" name="logout">
-    <a class="dropdown-item text-danger">Log Out</a>
-                  </button> </form></li>
-
-
-    </ul>
-  </div>
-</div>
-
-
-
   <div class="row">
 
     <div class="col-md-4 ">
       <form class="border p-3 mb-3" method="POST">
         <div id="cart-items" class="mb-3">
           <?php if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
-            <h5 class="mb-4 text-dark fs-2 ">Your Order List:</h5>
+            <h5 class="mb-4 text-dark fs-2 fw-bold">User  Order List:</h5>
             <div class="list-group mb-3">
               <?php foreach ($_SESSION['cart'] as $index => $item): ?>
                 <?php
@@ -363,7 +403,7 @@ if (isset($_POST['addToOrder'])) {
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                   <div>
                     <strong class="text-primary fs-4"><?= $product['product_name'] ?></strong><br>
-                    <strong class="text-dark fs-5 pt-3">  Price:</strong> <strong class="text-success fs-5"><?= $product['price'] ?> LE<br> </strong>
+                    <strong class="text-dark fs-5 pt-3 fw-bold">  Price:</strong> <strong class="text-success fs-5 fw-bold"><?= $product['price'] ?> LE<br> </strong>
                     <div class="d-flex align-items-center pt-3">
                       <button type="submit" name="update_quantity" value="decrease_<?= $index ?>" class="btn btn-sm btn-outline-secondary">-</button>
                       <span class="mx-2"><?= $item['quantity'] ?></span>
@@ -378,12 +418,20 @@ if (isset($_POST['addToOrder'])) {
         <div class="text-center my-5">
           <p class="text-primary fs-4">
             <i class="fas fa-shopping-cart me-2"></i>
-            Your order list is empty.
+            User Order List is empty.
           </p>
           </div>
           <?php endif; ?>
         </div>
 
+        <div class="mb-2">
+        <label for="user" class="form-label fw-bold">Select a user to place the order for</label>
+        <select id="user" name="user" class="form-select combo-box">
+            <?php while($user = mysqli_fetch_assoc($allUsers)): ?>
+              <option value="<?= $user['id'] ?>"><?= $user['name'] ?></option>
+            <?php endwhile; ?>
+          </select>
+        </div>
         <div class="mb-2">
           <label for="room" class="form-label  fw-bold">Room</label>
           <select id="room" name="room" class="form-select combo-box">
@@ -462,24 +510,25 @@ if (isset($_POST['addToOrder'])) {
         <?php endwhile; ?>
       </div>
     </div>
-    <?php if ($totalPages > 1): ?>
+   
+            </div>
+            <?php if ($totalPages > 1): ?>
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
-                            <!-- Previous Page Link -->
-                            <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
+
+                        <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
                                 <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                             
-                            <!-- Page Numbers -->
+
                             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                                 <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
                                     <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
                                 </li>
                             <?php endfor; ?>
                             
-                            <!-- Next Page Link -->
                             <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : '' ?>">
                                 <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
@@ -492,9 +541,42 @@ if (isset($_POST['addToOrder'])) {
                         Showing <?= ($offset + 1) ?> to <?= min($offset + $itemsPerPage, $totalProducts) ?> of <?= $totalProducts ?> products
                     </div>
                 <?php endif; ?>
-            </div>
         </div>
   </div>
 </div>
+</div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const toggleBtn = document.createElement('button');
+        
+        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        toggleBtn.className = 'btn btn-primary d-md-none position-fixed';
+        toggleBtn.style.top = '10px';
+        toggleBtn.style.left = '10px';
+        toggleBtn.style.zIndex = '1001';
+        
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('active');
+        });
+        
+        document.body.appendChild(toggleBtn);
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        document.getElementById('deleteProductId').value = productId;
+    });
+});
+
+$('#deleteConfirmModal').on('shown.bs.modal', function () {
+    $('.btn-secondary').focus();
+});
+});
+    </script>
 </body>
 </html>

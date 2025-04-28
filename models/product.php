@@ -24,7 +24,7 @@ function getAllProducts() {
 }
 function getAllAvaliableProducts() {
     include(__DIR__ . '/../connection.php');
-    $sql = "SELECT * FROM products  WHERE availability=1 ORDER BY product_name ASC";
+    $sql =  "SELECT * FROM products  WHERE availability=1  ORDER BY product_name ASC";
     $result = mysqli_query($myconnection, $sql);
     return $result;
 }
