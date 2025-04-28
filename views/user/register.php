@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     if (empty($_FILES['image']['name'])) {
         $errors['image'] = 'Profile image is required';
     } else {
-        $uploadResult = imageUpload();
+        $uploadResult = userImageUpload();
         if ($uploadResult !== false) {
             $image = $uploadResult;
         } else {
