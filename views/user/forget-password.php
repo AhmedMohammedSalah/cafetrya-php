@@ -154,10 +154,10 @@ mysqli_close($myconnection);
       <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm new password" required />
       <div class="error-message" id="confirmPasswordError">Passwords do not match.</div>
     </div>
-    <button type="submit" class="btn btn-primary btn-reset">Update Password</button>
+    <button type="submit" class="btn btn-primary btn-reset " style="background:rgb(113, 80, 36) !important;">Update Password</button>
   </form>
 
-  <a href="index.php" class="back-link">Back to Login</a>
+  <a href="login.php" class="back-link">Back to Login</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>

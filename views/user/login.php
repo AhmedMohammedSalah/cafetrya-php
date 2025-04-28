@@ -136,6 +136,7 @@ mysqli_close($myconnection);
     <div class="error-message" id="passwordError">Password must be at least 6 characters long.</div>
   </div>
   <a href="forget-password.php" class="forgot-link">Forgot password?</a>
+  <a href="register.php" class="forgot-link">Don't have an account? Register</a>
   <button type="submit" class="btn btn-primary btn-login mt-4">Login</button>
   <?php if (!empty($message)): ?>
     <div class="alert alert-info mt-3"><?php echo $message; ?></div>

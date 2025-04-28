@@ -99,16 +99,16 @@ $rooms = getAllRooms();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4e73df;
+            --primary-color:rgb(113, 80, 36);
             --secondary-color: #f8f9fc;
-            --success-color: #1cc88a;
+            --success-color: rgb(113, 80, 36);
             --danger-color: #e74a3b;
             --warning-color: #f6c23e;
             --border-radius: 0.35rem;
         }
         
         body {
-      background: linear-gradient(to right, #74ebd5, #acb6e5);
+      background: rgb(113, 80, 36);
       height: 100vh;
       margin: 0;
       display: flex;

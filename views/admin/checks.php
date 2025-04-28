@@ -78,7 +78,7 @@ if (!empty($selected_status)) {
 $category_query .= " GROUP BY c.name LIMIT 4";
 $category_result = mysqli_query($myconnection, $category_query);
 
-while ($row = $category_result) {
+while ($row = mysqli_fetch_assoc($category_result)) {
     $category_counts[$row['name']] = $row['count'];
 }
 
