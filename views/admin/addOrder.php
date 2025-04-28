@@ -546,37 +546,22 @@ if (isset($_POST['addToOrder'])) {
 </div>
 </div>
 <script>
-
     document.addEventListener('DOMContentLoaded', function() {
         const sidebar = document.querySelector('.sidebar');
         const mainContent = document.querySelector('.main-content');
         const toggleBtn = document.createElement('button');
-        
         toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
         toggleBtn.className = 'btn btn-primary d-md-none position-fixed';
         toggleBtn.style.top = '10px';
         toggleBtn.style.left = '10px';
         toggleBtn.style.zIndex = '1001';
-        
         toggleBtn.addEventListener('click', function() {
             sidebar.classList.toggle('active');
             mainContent.classList.toggle('active');
         });
-        
         document.body.appendChild(toggleBtn);
     });
-    document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const productId = this.getAttribute('data-product-id');
-        document.getElementById('deleteProductId').value = productId;
-    });
-});
-
-$('#deleteConfirmModal').on('shown.bs.modal', function () {
-    $('.btn-secondary').focus();
-});
-});
+   
     </script>
 </body>
 </html>
