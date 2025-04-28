@@ -6,6 +6,12 @@ if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
   exit;
 }
+
+if (isset($_POST['logout'])) {
+  session_destroy();
+  header("Location: login.php");
+}
+
 $user_id = $_SESSION['user_id'];
 
 $user=getUserById($user_id);
@@ -90,9 +96,8 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary:rgb(82, 148, 176);
-      --primary-color: #4e73df;
-      --primary-dark: rgb(82, 148, 176);
+      --primary: rgb(113, 80, 36);
+      --primary-dark:  rgb(113, 80, 36);
       --secondary:rgb(95, 56, 10);
       --secondary-light:rgb(81, 51, 10);
       --light-bg: #f9f7ff;
@@ -104,17 +109,7 @@ $current_page_orders = array_slice($orders, $offset, $items_per_page);
       --success:rgb(70, 196, 74);
       --warning:rgb(100, 65, 12);
       --danger: #f44336;
-      --info: #2196F3;
-    }
-    .header {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
+      --info:  rgb(113, 80, 36);
     }
     
     body {
