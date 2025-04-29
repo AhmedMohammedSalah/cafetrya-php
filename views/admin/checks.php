@@ -78,7 +78,7 @@ if (!empty($selected_status)) {
 $category_query .= " GROUP BY c.name LIMIT 4";
 $category_result = mysqli_query($myconnection, $category_query);
 
-while ($row = $category_result) {
+while ($row = ($category_result)) {
     $category_counts[$row['name']] = $row['count'];
 }
 
@@ -106,7 +106,7 @@ $status_result = mysqli_query($myconnection, $status_query);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .navbar-custom {
-            background-color: #6F4E37;
+            background-color:  #4e73df;
             padding: 15px 0; 
             height: 80px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
@@ -162,19 +162,19 @@ $status_result = mysqli_query($myconnection, $status_query);
             border-top: 1px solid rgba(255,255,255,0.1);
         }
         .btn-coffee {
-            background-color: #6F4E37;
+            background-color:  #4e73df;
             color: white;
         }
         .btn-coffee:hover {
-            background-color: #5a3c2a;
+            background-color:  #4e73df;
             color: white;
         }
         .page-item.active .page-link {
-            background-color: #6F4E37;
-            border-color: #6F4E37;
+            background-color:  #4e73df;
+            border-color:  #4e73df;
         }
         .page-link {
-            color: #6F4E37;
+            color:  #4e73df;
         }
         .product-card {
             transition: all 0.3s;
@@ -193,7 +193,7 @@ $status_result = mysqli_query($myconnection, $status_query);
             border-radius: 4px;
         }
         h1, h2, h3 {
-            color: #5a3c2a;
+            color:  #4e73df;
         }
         .pagination {
             justify-content: center;
@@ -244,7 +244,7 @@ $status_result = mysqli_query($myconnection, $status_query);
             content: "+";
             margin-right: 8px;
             font-weight: bold;
-            color: #6F4E37;
+            color:  #4e73df;
         }
         .expandable-row.expanded td:first-child:before {
             content: "-";
@@ -275,7 +275,7 @@ $status_result = mysqli_query($myconnection, $status_query);
         }
         .status-out-for-delivery {
             background-color: #fff3cd;
-            color: #664d03;
+            color:  #4e73df;
         }
         .status-default {
             background-color: #e2e3e5;
@@ -287,33 +287,7 @@ $status_result = mysqli_query($myconnection, $status_query);
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                Coffee  
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="list.php">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Orders</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <span class="user-name">Admin</span>
-                    <img src="https://via.placeholder.com/150" alt="Admin" class="user-avatar">
-                </div>
-            </div>
-        </div>
-    </nav>
+    
     <div class="container mt-4">
         <?php if(isset($status_message)): ?>
         <div class="alert alert-<?php echo $status_type; ?> alert-dismissible fade show" role="alert">
@@ -374,10 +348,7 @@ $status_result = mysqli_query($myconnection, $status_query);
                     echo "</div>";
                 }
             } else {
-                echo "<div class='summary-box'><h3>Tea</h3><p>0</p></div>";
-                echo "<div class='summary-box'><h3>Coffee</h3><p>0</p></div>";
-                echo "<div class='summary-box'><h3>Popcorn</h3><p>0</p></div>";
-                echo "<div class='summary-box'><h3>Cake</h3><p>0</p></div>";
+               
             }
             ?>
         </div>
@@ -405,15 +376,11 @@ $status_result = mysqli_query($myconnection, $status_query);
                                             <?php 
                                             $status_class = '';
                                             switch($row['status']) {
-                                                case 'completed':
-                                                    $status_class = 'status-completed';
-                                                    break;
+                                                
                                                 case 'cancelled':
                                                     $status_class = 'status-cancelled';
                                                     break;
-                                                case 'out for delivery':
-                                                    $status_class = 'status-out-for-delivery';
-                                                    break;
+                                               
                                                 default:
                                                     $status_class = 'status-default';
                                             }
@@ -424,15 +391,7 @@ $status_result = mysqli_query($myconnection, $status_query);
                                         </td>
                                         <td><?php echo date('Y/m/d h:i A', strtotime($row['created_at'])); ?></td>
                                         <td class="action-buttons" onclick="event.stopPropagation();">
-                                            <?php if($row['status'] != 'completed'): ?>
-                                            <form method="POST" action="">
-                                                <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
-                                                <input type="hidden" name="new_status" value="completed">
-                                                <button type="submit" name="update_status" class="btn btn-sm btn-success">
-                                                   Complete
-                                                </button>
-                                            </form>
-                                            <?php endif; ?>
+                                            
                                             
                                             <?php if($row['status'] != 'cancelled'): ?>
                                             <form method="POST" action="">
@@ -444,15 +403,9 @@ $status_result = mysqli_query($myconnection, $status_query);
                                             </form>
                                             <?php endif; ?>
                                             
-                                            <?php if($row['status'] != 'out for delivery'): ?>
-                                            <form method="POST" action="">
-                                                <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
-                                                <input type="hidden" name="new_status" value="out for delivery">
-                                                <button type="submit" name="update_status" class="btn btn-sm btn-warning ms-1">
-                                                    Out for Delivery
-                                                </button>
-                                            </form>
-                                            <?php endif; ?>
+                                            
+                                            
+                                               
                                         </td>
                                     </tr>
                                     <tr class="detail-row" id="details-<?php echo $row['id']; ?>" style="display: none;">
