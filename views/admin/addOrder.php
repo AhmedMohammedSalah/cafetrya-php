@@ -523,7 +523,7 @@ if (isset($_POST['addToOrder'])) {
         <?php while($product = mysqli_fetch_assoc($products)): ?>
           <div class="col-md-4 mb-4 mt-2">  
             <div class="card">
-              <img src="<?=__DIR__.'/../../admin/'.$product['image'] ?>" alt="product" class="product-image">
+              <img src="<?='../admin/'.$product['image'] ?>" alt="product" class="product-image">
               <div class="card-body d-flex flex-column justify-content-between bg-dark">
                 <h6 class="card-title text-light"><?= $product['product_name'] ?></h6>
               </div>

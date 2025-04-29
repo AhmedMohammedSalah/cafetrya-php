@@ -39,7 +39,7 @@ function userImageUpload() {
     if (!isset($_FILES['image'])) {
         return false;
     }
-    $uploadDir = 'uploads/user/';
+    $uploadDir = '../user/uploads/user/';
     // $uploadDir = './uploads/';
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     $maxSize = 2 * 1024 * 1024;

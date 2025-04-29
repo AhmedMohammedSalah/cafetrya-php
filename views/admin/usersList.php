@@ -273,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <td><?= $user['id'] ?></td>
                                 <td>
                                     <?php if (!empty($user['image'])): ?>
-                                        <img src="<?= $user['image'] ?>" 
+                                        <img src="<?= '../user/'.$user['image'] ?>" 
                                              alt="<?= $user['name'] ?>" 
                                              class="user-img img-thumbnail">
                                     <?php else: ?>

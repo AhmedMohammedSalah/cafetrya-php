@@ -370,7 +370,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
                                 <label for="email" class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
+                                    <input disabled type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
                                            id="email" name="email" 
                                            value="<?= htmlspecialchars($_POST['email'] ?? $user['email']) ?>">
                                     <?php if (isset($errors['email'])): ?>
