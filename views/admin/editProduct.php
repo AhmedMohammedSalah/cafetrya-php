@@ -19,6 +19,7 @@ if (!$product) {
     exit();
 }
 
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
     // Validate product name

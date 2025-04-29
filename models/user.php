@@ -22,5 +22,23 @@ function getAllUsers() {
     $result = mysqli_query($myconnection, $sql);
     return $result;
 }
+function deleteUser($userId) {
+    include(__DIR__ . '/../connection.php');
+    $sql = "DELETE FROM users WHERE id = $userId";
+    if (mysqli_query($myconnection, $sql)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function updateUser($userId, $name,$email,$password ,$image,$age, $room_id) {
+    include(__DIR__ . '/../connection.php');
+    $sql = "UPDATE users SET name = '$name', email='$email', image = '$image', age = $age, room_id = $room_id, password='$password' WHERE id = $userId";
+    if (mysqli_query($myconnection, $sql)) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 ?>
