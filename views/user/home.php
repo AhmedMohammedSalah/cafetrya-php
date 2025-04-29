@@ -111,7 +111,42 @@ body {
   width: 50px;
   height: 50px;
 }
-
+.pagination {
+      justify-content: center;
+      margin-top: 30px;
+    }
+    
+    .page-item.active .page-link {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .page-link {
+      color: var(--primary);
+    }
+    
+    .footer {
+      background-color: #343a40;
+      color: white;
+      padding: 20px 0;
+      margin-top: 50px;
+      text-align: center;
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .back-link:hover {
+      color: var(--dark-brown);
+    }
+    
+    
 .card {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border: none;
@@ -150,9 +185,6 @@ body {
   transition: transform 0.3s ease;
 }
 
-.card:hover .product-image {
-  transform: scale(1.05);
-}
 
 .cart-item {
   border-bottom: 1px solid var(--secondary);
