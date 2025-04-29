@@ -446,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
                             </div>
                             
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <a href="userList.php" class="btn btn-secondary me-md-2">
+                                <a href="usersList.php" class="btn btn-secondary me-md-2">
                                     <i class="fas fa-times me-2"></i>Cancel
                                 </a>
                                 <button type="submit" name="update_user" class="btn btn-success">

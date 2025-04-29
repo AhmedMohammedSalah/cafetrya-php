@@ -439,7 +439,7 @@ $status_result = mysqli_query($myconnection, $status_query);
                                         </td>
                                         <td><?php echo date('Y/m/d h:i A', strtotime($row['created_at'])); ?></td>
                                         <td class="action-buttons" onclick="event.stopPropagation();">
-                                            
+
                                             
                                             <?php if($row['status'] != 'cancelled'): ?>
                                             <form method="POST" action="">
@@ -450,7 +450,7 @@ $status_result = mysqli_query($myconnection, $status_query);
                                                 </button>
                                             </form>
                                             <?php endif; ?>
-                                            
+
                                             
                                             
                                                
