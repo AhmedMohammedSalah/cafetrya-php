@@ -29,6 +29,23 @@ $sql = "SELECT * FROM products WHERE availability=1 ORDER BY product_name ASC LI
 include(__DIR__ . '/../../connection.php');
 $products = mysqli_query($myconnection, $sql);
 $allCategories=getCategories();
+$categoryFilter = isset($_POST['category']) ? intval($_POST['category']) : 0;
+
+$sql = "SELECT * FROM products WHERE availability = 1";
+$countSql = "SELECT COUNT(*) FROM products WHERE availability = 1";
+
+if ($categoryFilter > 0) {
+    $sql .= " AND category_id = $categoryFilter";
+    $countSql .= " AND category_id = $categoryFilter";
+}
+
+$sql .= " ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
+
+$products = mysqli_query($myconnection, $sql);
+$resultCount = mysqli_query($myconnection, $countSql);
+$totalProducts = mysqli_fetch_row($resultCount)[0];
+$totalPages = ceil($totalProducts / $itemsPerPage);
+
 
 ?>
 <!DOCTYPE html>
@@ -39,24 +56,24 @@ $allCategories=getCategories();
   <title>Home Page</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-   :root {
-  --primary-color: #4e73df;
-  --secondary-color: #f8f9fc;
-  --accent-color: #1cc88a;
-  --danger-color: #e74a3b;
+  :root {
+  --primary: #6F4E37;
+  --secondary: #C4A484;
+  --light-brown: #e6d7c3;
+  --dark-brown: #5a3c2a;
+  --accent-color: #8B5A2B;
+  --danger-color: #A52A2A;
   --text-color: #343a40;
-  --text-color: #343a40;
-  --title-color:rgb(76, 0, 255);
+  --title-color: #5a3c2a;
 }
 
 body {
   font-family: 'Nunito', sans-serif;
-  background-color: var(--secondary-color);
 }
 
 .header {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+  background-color: var(--primary);
+  color: var(--light-brown);
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
@@ -66,7 +83,7 @@ body {
 }
 
 .header a {
-  color: var(--secondary-color);
+  color: var(--light-brown);
   text-decoration: none;
   font-weight: bold;
   margin-right: 20px;
@@ -74,7 +91,7 @@ body {
 }
 
 .header a:hover {
-  color: var(--accent-color);
+  color: var(--secondary);
 }
 
 .header .user-info {
@@ -87,9 +104,10 @@ body {
   margin-left: 10px;
   width: 35px;
   height: 35px;
-  border: 2px solid var(--accent-color);
+  border: 2px solid var(--secondary);
 }
-.rounded-circle{
+
+.rounded-circle {
   width: 50px;
   height: 50px;
 }
@@ -100,7 +118,7 @@ body {
   border-radius: 20px;
   width: 250px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fff;
+  background-color: var(--light-brown);
 }
 
 .card:hover {
@@ -109,8 +127,8 @@ body {
 }
 
 .card .card-footer {
-  background-color: var(--secondary-color);
-  border-top: 1px solid #e3e6f0;
+  background-color: var(--light-brown);
+  border-top: 1px solid var(--secondary);
   text-align: center;
   padding: 10px;
 }
@@ -118,6 +136,7 @@ body {
 .card .card-footer p {
   margin: 0;
   font-weight: bold;
+  color: var(--dark-brown);
 }
 
 .card .card-footer .btn {
@@ -136,7 +155,7 @@ body {
 }
 
 .cart-item {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--secondary);
   padding: 15px 0;
   display: flex;
   justify-content: space-between;
@@ -149,13 +168,13 @@ body {
 
 .cart-item strong {
   font-size: 1rem;
-  color: var(--text-color);
+  color: var(--dark-brown);
 }
 
 .cart-item .badge {
   font-size: 1rem;
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+  background-color: var(--primary);
+  color: var(--light-brown);
   border-radius: 8px;
   padding: 5px 10px;
 }
@@ -163,31 +182,33 @@ body {
 .cart-total {
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--primary-color);
+  color: var(--primary);
   text-align: center;
   margin-top: 15px;
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
+  background-color: var(--primary);
   border: none;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  color: var(--light-brown);
 }
 
 .btn-primary:hover {
-  background-color: #375a7f;
+  background-color: var(--dark-brown);
   transform: scale(1.05);
+  color: var(--light-brown);
 }
 
 .btn-outline-secondary {
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  color: var(--primary);
+  border-color: var(--primary);
   transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .btn-outline-secondary:hover {
-  color: var(--secondary-color);
-  background-color: var(--primary-color);
+  color: var(--light-brown);
+  background-color: var(--primary);
 }
 
 @media (max-width: 768px) {
@@ -326,7 +347,7 @@ if (isset($_POST['addToOrder'])) {
 <div class="header d-flex justify-content-between align-items-center p-2">
     <div class="d-flex align-items-center">
     <a class="navbar-brand" href="home.php">
-    <i class="fa-solid fa-mug-saucer fs-3  p-2"> Café Delight
+    <i class="fa-solid fa-mug-saucer fs-3  p-2"> Café Laté
     </i>   <div>
     </a> 
       <a href="home.php">Home</a> |
@@ -358,7 +379,7 @@ if (isset($_POST['addToOrder'])) {
       <form class="border p-3 mb-3" method="POST">
         <div id="cart-items" class="mb-3">
           <?php if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
-            <h5 class="mb-4 text-dark fs-2 ">Your Order List:</h5>
+            <h5 class="mb-4 text-dark fs-2 fw-bold ">Your Order List:</h5>
             <div class="list-group mb-3">
               <?php foreach ($_SESSION['cart'] as $index => $item): ?>
                 <?php
@@ -366,21 +387,21 @@ if (isset($_POST['addToOrder'])) {
                 ?>
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                   <div>
-                    <strong class="text-primary fs-4"><?= $product['product_name'] ?></strong><br>
-                    <strong class="text-dark fs-5 pt-3">  Price:</strong> <strong class="text-success fs-5"><?= $product['price'] ?> LE<br> </strong>
+                    <strong class="fs-4 fw-bold" style="color:var(--primary);"><?= $product['product_name'] ?></strong><br>
+                    <strong class="text-dark fs-5 pt-3">  Price:</strong> <strong class="fs-4 fw-bold "><?= $product['price'] ?> LE<br> </strong>
                     <div class="d-flex align-items-center pt-3">
                       <button type="submit" name="update_quantity" value="decrease_<?= $index ?>" class="btn btn-sm btn-outline-secondary">-</button>
                       <span class="mx-2"><?= $item['quantity'] ?></span>
                       <button type="submit" name="update_quantity" value="increase_<?= $index ?>" class="btn btn-sm btn-outline-secondary">+</button>
                     </div>
                   </div>
-                  <span class="badge bg-primary rounded-pill fs-5"><?= $product['price'] * $item['quantity'] ?> LE</span>
+                  <span class="badge btn-primary rounded-pill fs-5"><?= $product['price'] * $item['quantity'] ?> LE</span>
                 </div>
               <?php endforeach; ?>
             </div>
           <?php else: ?>
         <div class="text-center my-5">
-          <p class="text-primary fs-4">
+          <p class="fs-4">
             <i class="fas fa-shopping-cart me-2"></i>
             Your order list is empty.
           </p>
@@ -434,16 +455,9 @@ if (isset($_POST['addToOrder'])) {
     </div>
 
     <div class="col-md-8 mt-3">
-      <!-- <h5>Latest Order</h5>
-      <div class="d-flex gap-3 mb-3">
-        <div class="card text-center" style="width: 6rem;">
-          <div class="card-body p-2">
-            <h6 class="card-title mb-0">Tea</h6>
-          </div>
-        </div>
-      </div> -->
       <div class="filter-form content-center mb-3">
-      <form class="row g-3 align-items-end" method="POST">  
+      <form class="row g-3 align-items-end" method="POST"> 
+   
       <div class="mb-2">
           <label for="category" class="form-label fs-5 fw-bold">Filter With Category</label>
           <select id="category" name="category" class="form-select combo-box">
@@ -452,7 +466,7 @@ if (isset($_POST['addToOrder'])) {
               <?php endforeach; ?>
           </select>
         </div>
-
+   
         <div class="col-md-4 col-sm-12 d-flex gap-2">
           <button type="submit" name="filter" class="btn btn-primary flex-grow-1" >
             <i class="fas fa-filter me-2"></i>Filter
@@ -467,17 +481,17 @@ if (isset($_POST['addToOrder'])) {
       <div class="row">
         <?php while($product = mysqli_fetch_assoc($products)): ?>
           <div class="col-md-4 mb-4 mt-2">  
-            <div class="card">
-              <img src="<?=__DIR__.'/../../admin/'.$product['image'] ?>" alt="product" class="product-image">
+            <div class="card bg-light">
+              <img src=<?= $product['image'] ?> alt="product" class="product-image">
               <div class="card-body d-flex flex-column justify-content-between bg-dark">
-                <h6 class="card-title text-light"><?= $product['product_name'] ?></h6>
+                <h6 class="card-title text-light fs-4 fw-bold"><?= $product['product_name'] ?></h6>
               </div>
               <div class="card-footer d-flex justify-content-between align-items-center mt-2 mb-2">
-                <p class="text-primary mb-0 card-title mt-2 mb-2"><?= $product['price'] ?> LE</p>
+                <p class="primary mb-0 card-title mt-2 mb-2 fs-4 fw-bold"><?= $product['price'] ?> LE</p>
                 <form method="POST">
                   <input type="hidden" name="productId" value="<?= $product['id'] ?>">
-                  <button type="submit" name="addToOrder" class="btn btn-outline-primary btn-sm add" data-id="<?= $product['id'] ?>" data-name="<?= $product['product_name'] ?>" data-price="<?= $product['price'] ?>">
-                    <i class="fa-solid fa-cart-shopping"></i>
+                  <button type="submit" name="addToOrder" class="btn btn-primary btn-sm add" data-id="<?= $product['id'] ?>" data-name="<?= $product['product_name'] ?>" data-price="<?= $product['price'] ?>">
+                    <i class="fa-solid fa-cart-shopping "></i>
                   </button>
                 </form>
               </div>
@@ -489,21 +503,19 @@ if (isset($_POST['addToOrder'])) {
     <?php if ($totalPages > 1): ?>
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
-                            <!-- Previous Page Link -->
                             <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
-                                <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                                <a class="page-link " href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                             
-                            <!-- Page Numbers -->
                             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                                 <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
                                     <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
                                 </li>
                             <?php endfor; ?>
                             
-                            <!-- Next Page Link -->
+                            
                             <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : '' ?>">
                                 <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>

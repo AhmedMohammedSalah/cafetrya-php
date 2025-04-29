@@ -105,62 +105,71 @@ $status_result = mysqli_query($myconnection, $status_query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .navbar-custom {
-            background-color:  #4e73df;
-            padding: 15px 0; 
-            height: 80px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-        }
-        .navbar-brand {
-            font-size: 1.8rem; 
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .navbar-brand i {
-            font-size: 2rem;
-            margin-right: 10px;
-        }
-        .nav-link {
-            font-size: 1.1rem; 
-            padding: 10px 15px !important;
-            margin: 0 5px;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-        .user-avatar {
-            width: 50px; 
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #C4A484; 
-            transition: all 0.3s;
-        }
-        .user-avatar:hover {
-            transform: scale(1.05); 
-        }
-        .user-name {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-right: 15px;
+         :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #1cc88a;
+            --danger-color: #e74a3b;
+            --text-color: #343a40;
+            --text-color: #343a40;
+            --title-color:rgb(76, 0, 255);
+            }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
             color: white;
+            padding: 20px 0;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1000;
+            transition: all 0.3s;
         }
-        .navbar-toggler {
-            padding: 0.5rem 0.75rem;
-            font-size: 1.25rem;
+        
+        .sidebar-brand {
+            height: 4.375rem;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            letter-spacing: 0.05rem;
+            color: white;
+            display: block;
+            margin-bottom: 1rem;
         }
-        .nav-link {
-            margin: 5px 0;
-            padding: 8px 12px !important;
+        
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
         }
-        .user-info {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+        
+        .sidebar-item {
+            padding: 0.75rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 0.35rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s;
+            display: block;
+            text-decoration: none;
         }
+        
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .sidebar-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+
         .btn-coffee {
             background-color:  #4e73df;
             color: white;
@@ -287,7 +296,31 @@ $status_result = mysqli_query($myconnection, $status_query);
     </style>
 </head>
 <body>
-    
+<div class="d-flex">
+<div class="sidebar bg-light p-3" style="width: 250px; min-height: 100vh;">
+    <a href="#" class="sidebar-brand d-flex align-items-center justify-content-center mb-4">
+      <i class="fas fa-store me-2"></i>
+      <span>Admin Panel</span>
+    </a>
+    <div class="sidebar-divider"></div>
+    <div class="nav flex-column">
+      <a href="listProducts.php" class="sidebar-item mb-2">
+        <i class="fas fa-box-open"></i> <span>Products</span>
+      </a>
+      <a href="usersList.php" class="sidebar-item mb-2">
+        <i class="fas fa-users"></i> <span>Users</span>
+      </a>
+      <a href="checks.php" class="sidebar-item mb-2">
+        <i class="fas fa-file-invoice-dollar"></i> <span>Checks</span>
+      </a>
+      <a href="unfinshedOrders.php" class="sidebar-item mb-2">
+        <i class="fas fa-clipboard-list"></i> <span>Pending Orders</span>
+      </a>
+      <a href="addOrder.php" class="sidebar-item mb-2">
+        <i class="fa-solid fa-cart-shopping"></i> <span>Manual Orders</span>
+      </a>
+    </div>
+  </div>
     <div class="container mt-4">
         <?php if(isset($status_message)): ?>
         <div class="alert alert-<?php echo $status_type; ?> alert-dismissible fade show" role="alert">
@@ -489,6 +522,8 @@ $status_result = mysqli_query($myconnection, $status_query);
                 <?php endif; ?>
             </div>
         </div>
+        </div>
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

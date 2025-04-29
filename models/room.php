@@ -8,6 +8,12 @@ function getAllRooms() {
     $result = mysqli_query($myconnection, $sql);
     return $result;
 }
+function getRoomById($id) {
+    include(__DIR__ . '/../connection.php');
+    $sql = "SELECT room_name FROM rooms WHERE id = $id";
+    $result = mysqli_query($myconnection, $sql);
+    return $result;
+}
 
 ?>
 

@@ -328,17 +328,12 @@ $rooms = getAllRooms();
             <div class="sidebar-divider"></div>
             
             <div class="nav flex-column">
-                <a href="home.php" class="sidebar-item">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                
                 <a href="listProducts.php" class="sidebar-item">
                     <i class="fas fa-box-open"></i>
                     <span>Products</span>
                 </a>
                 
-                <a href="users.php" class="sidebar-item">
+                <a href="usersList.php" class="sidebar-item">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
                 </a>
@@ -353,6 +348,9 @@ $rooms = getAllRooms();
                     <i class="fas fa-clipboard-list"></i>
                     <span>Pending Orders</span>
                 </a>
+                <a href="addOrder.php" class="sidebar-item mb-2">
+        <i class="fa-solid fa-cart-shopping"></i> <span>Manual Orders</span>
+      </a>
             </div>
     </div>
     <div class="container">

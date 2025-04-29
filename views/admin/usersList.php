@@ -285,9 +285,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <td><?= $user['name']?></td>
                                 <td><?= htmlspecialchars($user['email']) ?></td>
                                 <td><?= $user['age'] ?? 'N/A' ?></td>
-                                <td><?= $user['room_number'] ?? 'N/A' ?></td>
+                                <td><?= $user['room_id']?></td>
                                 <td>
-                                    <!-- Edit Button -->
                                     <a href="editUser.php?id=<?= $user['id'] ?>" class="btn btn-sm btn-warning action-btn">
                                         <i class="fas fa-edit"></i>
                                     </a>

@@ -13,6 +13,22 @@ $totalPages = ceil($totalProducts / $itemsPerPage);
 $sql = "SELECT * FROM products WHERE availability=1 ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
 $products = mysqli_query($myconnection, $sql);
 $allCategories=getCategories();
+$categoryFilter = isset($_POST['category']) ? intval($_POST['category']) : 0;
+
+$sql = "SELECT * FROM products WHERE availability = 1";
+$countSql = "SELECT COUNT(*) FROM products WHERE availability = 1";
+
+if ($categoryFilter > 0) {
+    $sql .= " AND category_id = $categoryFilter";
+    $countSql .= " AND category_id = $categoryFilter";
+}
+
+$sql .= " ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
+
+$products = mysqli_query($myconnection, $sql);
+$resultCount = mysqli_query($myconnection, $countSql);
+$totalProducts = mysqli_fetch_row($resultCount)[0];
+$totalPages = ceil($totalProducts / $itemsPerPage);
 
 ?>
 <!DOCTYPE html>
@@ -370,13 +386,10 @@ if (isset($_POST['addToOrder'])) {
     </a>
     <div class="sidebar-divider"></div>
     <div class="nav flex-column">
-      <a href="home.php" class="sidebar-item mb-2">
-        <i class="fas fa-home"></i> <span>Home</span>
-      </a>
-      <a href="listProducts.php" class="sidebar-item mb-2">
+    <a href="listProducts.php" class="sidebar-item mb-2">
         <i class="fas fa-box-open"></i> <span>Products</span>
       </a>
-      <a href="users.php" class="sidebar-item mb-2">
+      <a href="usersList.php" class="sidebar-item mb-2">
         <i class="fas fa-users"></i> <span>Users</span>
       </a>
       <a href="checks.php" class="sidebar-item mb-2">
@@ -483,14 +496,7 @@ if (isset($_POST['addToOrder'])) {
     </div>
 
     <div class="col-md-8 mt-3">
-      <!-- <h5>Latest Order</h5>
-      <div class="d-flex gap-3 mb-3">
-        <div class="card text-center" style="width: 6rem;">
-          <div class="card-body p-2">
-            <h6 class="card-title mb-0">Tea</h6>
-          </div>
-        </div>
-      </div> -->
+   
       <div class="filter-form content-center mb-3">
       <form class="row g-3 align-items-end" method="POST">  
       <div class="mb-2">
@@ -506,7 +512,7 @@ if (isset($_POST['addToOrder'])) {
           <button type="submit" name="filter" class="btn btn-primary flex-grow-1" >
             <i class="fas fa-filter me-2"></i>Filter
           </button>
-          <a href="home.php" class="btn btn-outline-secondary flex-grow-1">
+          <a href="addOrder.php" class="btn btn-outline-secondary flex-grow-1">
             <i class="fas fa-redo me-2"></i>Reset
           </a>
         </div>

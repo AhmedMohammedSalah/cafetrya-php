@@ -1,9 +1,10 @@
 <?php
 session_start();
 include_once '../../connection.php';
+include_once(__DIR__ .'/../../models/user.php');
 
 $user_id = $_SESSION['user_id'];
-
+$user=getUserById($user_id);
 if (!$myconnection) {
   die("Connection failed: " . mysqli_connect_error());
 }
@@ -19,6 +20,10 @@ if (isset($_GET['cancel_id'])) {
   }
   header("Location: myorder.php");
   exit;
+}
+if (isset($_POST['logout'])) {
+  session_destroy();
+  header("Location: login.php");
 }
 
 
@@ -109,13 +114,26 @@ if ($room_result) {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    .header {
-      background-color: var(--primary);
-      color: white;
-      padding: 20px 0;
-      border-bottom: 5px solid var(--secondary);
-    }
     
+.header {
+  background-color: var(--primary);
+  color: var(--light-brown);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.header a {
+  color: var(--light-brown);
+  text-decoration: none;
+  font-weight: bold;
+  margin-right: 20px;
+  transition: color 0.3s ease;
+}
+
     .content-wrapper {
       max-width: 1200px;
       margin: 0 auto;
@@ -316,7 +334,34 @@ if ($room_result) {
     }
   </style>
 </head>
-<body>
+<body class="p-3" >
+<div class="header d-flex justify-content-between align-items-center p-2">
+    <div class="d-flex align-items-center">
+    <a class="navbar-brand" href="home.php">
+    <i class="fa-solid fa-mug-saucer fs-3  p-2"> Café Laté
+    </i>   <div>
+    </a> 
+      <a href="home.php">Home</a> |
+      <a href="myorder.php">My Orders</a>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <div class="d-flex align-items-center" data-bs-toggle="dropdown" style="cursor: pointer;">
+      <span class="me-2 text-light">
+        <div>Hi!</div><?= $user['name'] ?>
+      </span>
+      <img src="<?= $user['image']?>" class="rounded-circle" alt="User" width="40" height="40">
+    </div>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class="dropdown-item text-danger">Log Out</a>
+                  </button> </form></li>
+
+    </ul>
+  </div>
+</div>
  
 
   <div class="content-wrapper">
