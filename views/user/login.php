@@ -7,6 +7,15 @@ $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
+
+    if($email==='admin@gmail.com' &&  $password==='admin12345'){
+      $_SESSION['admin'] ='admin';
+      header("Location:'/../../admin/usersList.php");
+
+    }
+
+    $password = $_POST['password'];
+
     
     $sql = "SELECT * FROM users WHERE email='$email'";
     $result = mysqli_query($myconnection, $sql);

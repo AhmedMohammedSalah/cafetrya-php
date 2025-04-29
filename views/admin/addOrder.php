@@ -1,5 +1,15 @@
 <?php
 session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 include_once "../../connection.php";
 include_once(__DIR__ .'/../../models/product.php');
 include_once(__DIR__ .'/../../models/category.php');
@@ -385,6 +395,10 @@ if (isset($_POST['addToOrder'])) {
       <span>Admin Panel</span>
     </a>
     <div class="sidebar-divider"></div>
+    <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
     <div class="nav flex-column">
     <a href="listProducts.php" class="sidebar-item mb-2">
         <i class="fas fa-box-open"></i> <span>Products</span>

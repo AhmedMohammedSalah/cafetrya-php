@@ -1,4 +1,15 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 // Pagination settings
 include_once(__DIR__ . '/../../models/order.php');
 $itemsPerPage = 10; // Number of orders per page
@@ -7,6 +18,7 @@ $offset = ($currentPage - 1) * $itemsPerPage;
 $totalOrders = getPendingOrdersCount();
 $orders = getPendingOrdersPaginated($itemsPerPage, $offset);
 $totalPages = ceil($totalOrders / $itemsPerPage);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -313,6 +325,10 @@ $totalPages = ceil($totalOrders / $itemsPerPage);
             <div class="sidebar-divider"></div>
             
             <div class="nav flex-column">
+            <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
                 <a href="listProducts.php" class="sidebar-item">
                     <i class="fas fa-box-open"></i>
                     <span>Products</span>
