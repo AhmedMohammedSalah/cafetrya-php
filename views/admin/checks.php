@@ -76,11 +76,11 @@ if (!empty($selected_status)) {
 }
 
 $category_query .= " GROUP BY c.name LIMIT 4";
-$category_result = mysqli_query($myconnection, $category_query);
+// $category_result = mysqli_query($myconnection, $category_query);
 
-while ($row = ($category_result)) {
-    $category_counts[$row['name']] = $row['count'];
-}
+// while ($row = ($category_result)) {
+//     $category_counts[$row['name']] = $row['count'];
+// }
 
 function get_order_details($myconnection, $order_id) {
     $query = "SELECT op.id, op.quantity, op.price, op.notes, p.name as product_name, c.name as category_name, o.created_at
