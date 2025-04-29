@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             $_SESSION['email'] = $row['email'];
             header("Location: home.php");
             exit;
-        } else {
+        } 
+        else {
             $message = "Invalid password!";
         }
     } else {

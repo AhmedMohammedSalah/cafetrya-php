@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (deleteUser($userId)) {
             $_SESSION['message'] = 'User deleted successfully.';
             $_SESSION['message_type'] = 'success';
-            header("Location: userList.php?page=$currentPage");
+            header("Location: usersList.php?page=$currentPage");
             exit();
         } else {
             $_SESSION['message'] = 'Failed to delete user.';

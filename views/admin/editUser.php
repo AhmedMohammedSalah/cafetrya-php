@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
         if (updateUser($userId, $name, $email, $password, $image, $age, $roomId)) {
             $_SESSION['message'] = 'User updated successfully!';
             $_SESSION['message_type'] = 'success';
-            header("Location: userList.php");
+            header("Location: usersList.php");
             exit();
         } else {
             $user_message = 'Failed to update user. Please try again.';
@@ -370,7 +370,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
                                 <label for="email" class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input disabled type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
+                                    <input  type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
                                            id="email" name="email" 
                                            value="<?= htmlspecialchars($_POST['email'] ?? $user['email']) ?>">
                                     <?php if (isset($errors['email'])): ?>
