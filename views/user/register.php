@@ -79,6 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
             $user_message = 'User added successfully!';
             // Clear form on success
             $_POST = array();
+            echo "<script>
+            setTimeout(function() {
+                window.location.href = 'login.php';
+            }, 2000);
+        </script>";
         } else {
             $user_message = 'Failed to add user. Please try again.';
         }

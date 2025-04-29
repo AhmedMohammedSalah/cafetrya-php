@@ -362,7 +362,7 @@ if (isset($_POST['addToOrder'])) {
                 'quantity' => 1
             ];
         }
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        echo '<script>window.location.href="'.$_SERVER['PHP_SELF'].'";</script>';
         exit();
     }
 }
