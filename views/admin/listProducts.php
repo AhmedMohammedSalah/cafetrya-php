@@ -19,9 +19,32 @@ include(__DIR__ . '/../../connection.php');
 $products = mysqli_query($myconnection, $sql);
 
 // Handle form actions
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST["deletebtn"])){
+        $productId = $_POST['product_id'];
+        if(checkProductRelationship($productId)) {
+            $_SESSION['message'] = 'Cannot delete product. It is related to existing orders.';
+            $_SESSION['message_type'] = 'danger';
+            header("Location: listProducts.php?page=$currentPage");
+            exit();
+        }
+    }
     if (isset($_POST['delete'])) {
         $productId = $_POST['product_id'];
+        // Check if the product is related to any orders
+        if (checkProductRelationship($productId)) {
+            $_SESSION['message'] = 'Cannot delete product. It is related to existing orders.';
+            $_SESSION['message_type'] = 'danger';
+            // change availability to be unavailable
+            $prod =getProductById ($productId);
+            $availability = $prod['availability'];
+            if ($availability == 1) {
+                changeAvailability($productId);
+            }
+            header("Location: listProducts.php?page=$currentPage");
+            exit();
+        }
         if (deleteProduct($productId)) {
              $_SESSION['message'] = 'Product deleted successfully.';
             $_SESSION['message_type'] = 'success';
@@ -290,7 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <td><?= $product['id'] ?></td>
                                 <td>
                                     <?php if (!empty($product['image'])): ?>
-                                        <img src="<?= $product['image'] ?>" 
+                                        <img src="<?php echo $product['image'] ?>" 
                                              alt="<?= $product['product_name'] ?>" 
                                              class="product-img img-thumbnail">
                                     <?php else: ?>
@@ -307,27 +330,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <?= $product['availability'] == 1 ? 'Available' : 'Unavailable' ?>
                                     </span>
                                 </td>
-                                <td>
-                                    <!-- Edit Button -->
-                                    <a href="editProduct.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-warning action-btn">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    
-                                    <!-- Toggle Availability Form -->
-                                    <form method="POST" style="display: inline;">
-                                        <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                                        <button type="submit" name="toggle_availability" class="btn btn-sm btn-info action-btn">
-                                            <i class="fas fa-toggle-<?= $product['availability'] == 1 ? 'on' : 'off' ?>"></i>
-                                        </button>
-                                    </form>
-                                    
-                                    <!-- Delete Form -->
-                                    <form method="POST" style="display: inline;">
-    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-    <button type="button" class="btn btn-sm btn-danger action-btn delete-btn" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-product-id="<?= $product['id'] ?>">
-        <i class="fas fa-trash-alt"></i>
-    </button>
-</form>
+                                
+<td>
+    <!-- Edit Button with Tooltip -->
+    <a href="editProduct.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-warning action-btn" data-bs-toggle="tooltip" title="Edit Product">
+        <i class="fas fa-edit"></i>
+    </a>
+    
+    <!-- Toggle Availability Form with Tooltip -->
+    <form method="POST" style="display: inline;">
+        <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+        <button type="submit" name="toggle_availability" class="btn btn-sm btn-info action-btn" data-bs-toggle="tooltip" title="<?= $product['availability'] == 1 ? ' switch availability ' : 'switch availibality Product' ?>">
+            <i class="fas fa-toggle-<?= $product['availability'] == 1 ? 'on' : 'off' ?>"></i>
+        </button>
+    </form>
+    
+    <!-- Delete Form with Tooltip -->
+    <form method="POST" style="display: inline;">
+        <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+        <button type="button" name="deletebtn" class="btn btn-sm btn-danger action-btn delete-btn" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-product-id="<?= $product['id'] ?>" data-bs-toggle="tooltip" title="Delete Product">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+    </form>
+</td>
+
 
 
                                 </td>
@@ -379,6 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="modal-body">
                 Are you sure you want to delete this product?
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

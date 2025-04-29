@@ -8,7 +8,7 @@ $errors = []; // Array to store validation errors
 // Include necessary files
 include_once(__DIR__ .'/../../models/product.php');
 include_once(__DIR__ .'/../../models/category.php');
-include_once(__DIR__ .'/../../controllers/imagesUpload.php');
+include_once('imagesUpload.php');
 
 // Handle product submission
 if (isset($_POST['add_product'])) {
