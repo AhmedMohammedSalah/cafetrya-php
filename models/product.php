@@ -65,4 +65,12 @@ function getProductsByCategory($categoryId) {
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+function checkProductRelationship($productId) {
+    include(__DIR__ . '/../connection.php');
+    $sql = "SELECT * FROM order_items WHERE product_id = $productId";
+    $result = mysqli_query($myconnection, $sql);
+    return mysqli_num_rows($result) > 0;
+}
+
+
 ?>

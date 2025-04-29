@@ -479,10 +479,10 @@ if (isset($_POST['addToOrder'])) {
     </div>
 
       <div class="row">
-        <?php while($product = mysqli_fetch_assoc($products)): ?>
-          <div class="col-md-4 mb-4 mt-2">  
-            <div class="card bg-light">
-              <img src=<?= $product['image'] ?> alt="product" class="product-image">
+        <?php while($product = mysqli_fetch_assoc($allProducts)): ?>
+          <div class="col-md-4 mb-4 mt-2">
+            <div class="card">
+              <img src="<?='../admin/'.$product['image'] ?>" alt="product" class="product-image">
               <div class="card-body d-flex flex-column justify-content-between bg-dark">
                 <h6 class="card-title text-light fs-4 fw-bold"><?= $product['product_name'] ?></h6>
               </div>

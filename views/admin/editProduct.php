@@ -7,7 +7,7 @@ $errors = []; // Array to store validation errors
 // Include necessary files
 include_once(__DIR__ . '/../../models/product.php');
 include_once(__DIR__ . '/../../models/category.php');
-include_once(__DIR__ . '/../../controllers/imagesUpload.php');
+include_once('imagesUpload.php');
 
 // Get product ID from URL
 $productId = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -391,6 +391,24 @@ if (isset($_POST['save_category'])) {
                             }, 5000);
                         }
                     });
+                     // Mobile sidebar toggle
+                    const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.createElement('button');
+            
+            toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            toggleBtn.className = 'btn btn-primary d-md-none position-fixed';
+            toggleBtn.style.top = '10px';
+            toggleBtn.style.left = '10px';
+            toggleBtn.style.zIndex = '1001';
+            
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                mainContent.classList.toggle('active');
+            });
+            
+            document.body.appendChild(toggleBtn);
+        });
                     </script>
                 <?php endif; ?>
                 

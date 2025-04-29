@@ -28,7 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     } elseif (strlen($email) > 100) {
         $errors['email'] = 'Email must be less than 100 characters';
     }
-
+    // Check if email already exists
+    if (checkMail($email)) {
+        $errors['email'] = 'Email already exists';
+    }
     // Validate password
     $password = $_POST['password'];
     if (empty($password)) {
