@@ -1,4 +1,15 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 // Initialize variables
 $user_message = '';
 $errors = [];
@@ -330,7 +341,10 @@ $rooms = getAllRooms();
             </a>
             
             <div class="sidebar-divider"></div>
-            
+            <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
             <div class="nav flex-column">
                 <a href="listProducts.php" class="sidebar-item">
                     <i class="fas fa-box-open"></i>

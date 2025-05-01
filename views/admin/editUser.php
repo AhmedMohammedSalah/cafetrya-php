@@ -1,4 +1,15 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 $user_message = '';
 $errors = []; 
 include_once(__DIR__ . '/../../models/user.php');
@@ -73,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
         if (updateUser($userId, $name, $email, $password, $image, $age, $roomId)) {
             $_SESSION['message'] = 'User updated successfully!';
             $_SESSION['message_type'] = 'success';
-            header("Location: userList.php");
+            header("Location: usersList.php");
             exit();
         } else {
             $user_message = 'Failed to update user. Please try again.';
@@ -264,7 +275,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
             </a>
             
             <div class="sidebar-divider"></div>
-            
+            <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
             <div class="nav flex-column">
                 <a href="listProducts.php" class="sidebar-item">
                     <i class="fas fa-box-open"></i>
@@ -370,7 +384,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
                                 <label for="email" class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input disabled type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
+                                    <input  type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
                                            id="email" name="email" 
                                            value="<?= htmlspecialchars($_POST['email'] ?? $user['email']) ?>">
                                     <?php if (isset($errors['email'])): ?>
@@ -432,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
                             </div>
                             
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <a href="userList.php" class="btn btn-secondary me-md-2">
+                                <a href="usersList.php" class="btn btn-secondary me-md-2">
                                     <i class="fas fa-times me-2"></i>Cancel
                                 </a>
                                 <button type="submit" name="update_user" class="btn btn-success">

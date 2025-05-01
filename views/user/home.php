@@ -4,6 +4,8 @@ include_once "../../connection.php";
 include_once(__DIR__ .'/../../models/user.php');
 include_once(__DIR__ .'/../../models/product.php');
 include_once(__DIR__ .'/../../models/category.php');
+include_once(__DIR__ .'/../../models/room.php');
+include_once(__DIR__ .'/../../models/order.php');
 
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
@@ -45,198 +47,6 @@ $products = mysqli_query($myconnection, $sql);
 $resultCount = mysqli_query($myconnection, $countSql);
 $totalProducts = mysqli_fetch_row($resultCount)[0];
 $totalPages = ceil($totalProducts / $itemsPerPage);
-
-
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home Page</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-  :root {
-  --primary: #6F4E37;
-  --secondary: #C4A484;
-  --light-brown: #e6d7c3;
-  --dark-brown: #5a3c2a;
-  --accent-color: #8B5A2B;
-  --danger-color: #A52A2A;
-  --text-color: #343a40;
-  --title-color: #5a3c2a;
-}
-
-body {
-  font-family: 'Nunito', sans-serif;
-}
-
-.header {
-  background-color: var(--primary);
-  color: var(--light-brown);
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-.header a {
-  color: var(--light-brown);
-  text-decoration: none;
-  font-weight: bold;
-  margin-right: 20px;
-  transition: color 0.3s ease;
-}
-
-.header a:hover {
-  color: var(--secondary);
-}
-
-.header .user-info {
-  display: flex;
-  align-items: center;
-}
-
-.header .user-info img {
-  border-radius: 50%;
-  margin-left: 10px;
-  width: 35px;
-  height: 35px;
-  border: 2px solid var(--secondary);
-}
-
-.rounded-circle {
-  width: 50px;
-  height: 50px;
-}
-
-.card {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: none;
-  border-radius: 20px;
-  width: 250px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: var(--light-brown);
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.card .card-footer {
-  background-color: var(--light-brown);
-  border-top: 1px solid var(--secondary);
-  text-align: center;
-  padding: 10px;
-}
-
-.card .card-footer p {
-  margin: 0;
-  font-weight: bold;
-  color: var(--dark-brown);
-}
-
-.card .card-footer .btn {
-  margin-top: 5px;
-}
-
-.product-image {
-  height: 150px;
-  object-fit: cover;
-  border-radius: 12px 12px 0 0;
-  transition: transform 0.3s ease;
-}
-
-.card:hover .product-image {
-  transform: scale(1.05);
-}
-
-.cart-item {
-  border-bottom: 1px solid var(--secondary);
-  padding: 15px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.cart-item:last-child {
-  border-bottom: none;
-}
-
-.cart-item strong {
-  font-size: 1rem;
-  color: var(--dark-brown);
-}
-
-.cart-item .badge {
-  font-size: 1rem;
-  background-color: var(--primary);
-  color: var(--light-brown);
-  border-radius: 8px;
-  padding: 5px 10px;
-}
-
-.cart-total {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary);
-  text-align: center;
-  margin-top: 15px;
-}
-
-.btn-primary {
-  background-color: var(--primary);
-  border: none;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  color: var(--light-brown);
-}
-
-.btn-primary:hover {
-  background-color: var(--dark-brown);
-  transform: scale(1.05);
-  color: var(--light-brown);
-}
-
-.btn-outline-secondary {
-  color: var(--primary);
-  border-color: var(--primary);
-  transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.btn-outline-secondary:hover {
-  color: var(--light-brown);
-  background-color: var(--primary);
-}
-
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .header a {
-    margin: 5px 0;
-  }
-
-  .cart-item {
-    flex-direction: column;
-  }
-
-  .cart-item strong,
-  .cart-item .badge {
-    margin-bottom: 10px;
-  }
-}
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-<?php
-include_once(__DIR__ .'/../../models/room.php');
-include_once(__DIR__ .'/../../models/order.php');
 $allRooms = getAllRooms();
 if (isset($_POST['add_Order'])) {
     $notes = $_POST['notes'];
@@ -330,7 +140,7 @@ if (isset($_POST['addToOrder'])) {
                 'quantity' => 1
             ];
         }
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        echo '<script>window.location.href="'.$_SERVER['PHP_SELF'].'";</script>';
         exit();
     }
 }
@@ -342,7 +152,224 @@ if (isset($_POST['addToOrder'])) {
 
 
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  :root {
+  --primary: #6F4E37;
+  --secondary: #C4A484;
+  --light-brown: #e6d7c3;
+  --dark-brown: #5a3c2a;
+  --accent-color: #8B5A2B;
+  --danger-color: #A52A2A;
+  --text-color: #343a40;
+  --title-color: #5a3c2a;
+}
 
+body {
+  font-family: 'Nunito', sans-serif;
+}
+
+.header {
+  background-color: var(--primary);
+  color: var(--light-brown);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.header a {
+  color: var(--light-brown);
+  text-decoration: none;
+  font-weight: bold;
+  margin-right: 20px;
+  transition: color 0.3s ease;
+}
+
+.header a:hover {
+  color: var(--secondary);
+}
+
+.header .user-info {
+  display: flex;
+  align-items: center;
+}
+
+.header .user-info img {
+  border-radius: 50%;
+  margin-left: 10px;
+  width: 35px;
+  height: 35px;
+  border: 2px solid var(--secondary);
+}
+
+.rounded-circle {
+  width: 50px;
+  height: 50px;
+}
+.pagination {
+      justify-content: center;
+      margin-top: 30px;
+    }
+    
+    .page-item.active .page-link {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .page-link {
+      color: var(--primary);
+    }
+    
+    .footer {
+      background-color: #343a40;
+      color: white;
+      padding: 20px 0;
+      margin-top: 50px;
+      text-align: center;
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .back-link:hover {
+      color: var(--dark-brown);
+    }
+    
+    
+.card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 20px;
+  width: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--light-brown);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card .card-footer {
+  background-color: var(--light-brown);
+  border-top: 1px solid var(--secondary);
+  text-align: center;
+  padding: 10px;
+}
+
+.card .card-footer p {
+  margin: 0;
+  font-weight: bold;
+  color: var(--dark-brown);
+}
+
+.card .card-footer .btn {
+  margin-top: 5px;
+}
+
+.product-image {
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  transition: transform 0.3s ease;
+}
+
+
+.cart-item {
+  border-bottom: 1px solid var(--secondary);
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item strong {
+  font-size: 1rem;
+  color: var(--dark-brown);
+}
+
+.cart-item .badge {
+  font-size: 1rem;
+  background-color: var(--primary);
+  color: var(--light-brown);
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+.cart-total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary);
+  text-align: center;
+  margin-top: 15px;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  color: var(--light-brown);
+}
+
+.btn-primary:hover {
+  background-color: var(--dark-brown);
+  transform: scale(1.05);
+  color: var(--light-brown);
+}
+
+.btn-outline-secondary {
+  color: var(--primary);
+  border-color: var(--primary);
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  color: var(--light-brown);
+  background-color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header a {
+    margin: 5px 0;
+  }
+
+  .cart-item {
+    flex-direction: column;
+  }
+
+  .cart-item strong,
+  .cart-item .badge {
+    margin-bottom: 10px;
+  }
+}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
 <body class="p-3">
 <div class="header d-flex justify-content-between align-items-center p-2">
     <div class="d-flex align-items-center">
@@ -401,7 +428,7 @@ if (isset($_POST['addToOrder'])) {
             </div>
           <?php else: ?>
         <div class="text-center my-5">
-          <p class="fs-4">
+          <p class="-primary fs-4">
             <i class="fas fa-shopping-cart me-2"></i>
             Your order list is empty.
           </p>
@@ -479,10 +506,10 @@ if (isset($_POST['addToOrder'])) {
     </div>
 
       <div class="row">
-        <?php while($product = mysqli_fetch_assoc($allProducts)): ?>
-          <div class="col-md-4 mb-4 mt-2">
-            <div class="card">
-              <img src="<?='../admin/'.$product['image'] ?>" alt="product" class="product-image">
+        <?php while($product = mysqli_fetch_assoc($products)): ?>
+          <div class="col-md-4 mb-4 mt-2">  
+            <div class="card bg-light">
+              <img src=<?= '../admin/'.$product['image'] ?> alt="product" class="product-image">
               <div class="card-body d-flex flex-column justify-content-between bg-dark">
                 <h6 class="card-title text-light fs-4 fw-bold"><?= $product['product_name'] ?></h6>
               </div>

@@ -1,8 +1,17 @@
 <?php
-
+session_start();
 include_once(__DIR__ . '/../../models/user.php');
 include_once(__DIR__ . '/../../models/room.php');
-
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 
 $itemsPerPage = 10;
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -25,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (deleteUser($userId)) {
             $_SESSION['message'] = 'User deleted successfully.';
             $_SESSION['message_type'] = 'success';
-            header("Location: userList.php?page=$currentPage");
+            header("Location: usersList.php?page=$currentPage");
             exit();
         } else {
             $_SESSION['message'] = 'Failed to delete user.';
@@ -208,11 +217,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="sidebar-divider"></div>
         
         <div class="nav flex-column">
-            <a href="home.php" class="sidebar-item">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            
+        <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
+
             <a href="listProducts.php" class="sidebar-item">
                 <i class="fas fa-box-open"></i>
                 <span>Products</span>
@@ -232,6 +241,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <i class="fas fa-clipboard-list"></i>
                 <span>Pending Orders</span>
             </a>
+            <a href="addOrder.php" class="sidebar-item mb-2">
+        <i class="fa-solid fa-cart-shopping"></i> <span>Manual Orders</span>
+      </a>
+            
         </div>
     </div>
     

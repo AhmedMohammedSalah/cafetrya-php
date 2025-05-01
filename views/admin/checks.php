@@ -1,4 +1,15 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 include_once "../../connection.php";
 
 if(isset($_POST['update_status'])) {
@@ -303,6 +314,10 @@ $status_result = mysqli_query($myconnection, $status_query);
       <span>Admin Panel</span>
     </a>
     <div class="sidebar-divider"></div>
+    <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
     <div class="nav flex-column">
       <a href="listProducts.php" class="sidebar-item mb-2">
         <i class="fas fa-box-open"></i> <span>Products</span>
@@ -424,7 +439,7 @@ $status_result = mysqli_query($myconnection, $status_query);
                                         </td>
                                         <td><?php echo date('Y/m/d h:i A', strtotime($row['created_at'])); ?></td>
                                         <td class="action-buttons" onclick="event.stopPropagation();">
-                                            
+
                                             
                                             <?php if($row['status'] != 'cancelled'): ?>
                                             <form method="POST" action="">
@@ -435,7 +450,7 @@ $status_result = mysqli_query($myconnection, $status_query);
                                                 </button>
                                             </form>
                                             <?php endif; ?>
-                                            
+
                                             
                                             
                                                

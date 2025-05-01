@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $message = "Passwords do not match.";
                 $messageType = "warning";
             } else {
+              $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
                 $updateSql = "UPDATE users SET password='$newPassword' WHERE email='$email'";
                 if (mysqli_query($myconnection, $updateSql)) {
                     $message = "Password has been updated successfully. <a href='index.php'>Login now</a>";

@@ -1,4 +1,15 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 // Include necessary files
 include_once(__DIR__ . '/../../models/product.php');
 include_once(__DIR__ . '/../../models/category.php');
@@ -251,7 +262,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="sidebar-divider"></div>
             
             <div class="nav flex-column">
-               
+            <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
                 <a href="listProducts.php" class="sidebar-item">
                     <i class="fas fa-box-open"></i>
                     <span>Products</span>

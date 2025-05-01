@@ -3,6 +3,19 @@ session_start();
 include_once "../../connection.php";
 include_once(__DIR__ .'/../../models/product.php');
 include_once(__DIR__ .'/../../models/category.php');
+include_once(__DIR__ .'/../../models/room.php');
+include_once(__DIR__ .'/../../models/order.php');
+include_once(__DIR__ .'/../../models/user.php');
+if (!isset($_SESSION['admin'])) {
+    header("Location:'/../../user/login.php");
+    exit; 
+  }
+  
+  if (isset($_POST['logout'])) {    
+    session_destroy();
+    header("Location:'/../../user/login.php");
+  }
+  
 $itemsPerPage = 6;
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $offset = ($currentPage - 1) * $itemsPerPage;
@@ -22,14 +35,111 @@ if ($categoryFilter > 0) {
     $sql .= " AND category_id = $categoryFilter";
     $countSql .= " AND category_id = $categoryFilter";
 }
-
 $sql .= " ORDER BY product_name ASC LIMIT $itemsPerPage OFFSET $offset";
-
 $products = mysqli_query($myconnection, $sql);
 $resultCount = mysqli_query($myconnection, $countSql);
 $totalProducts = mysqli_fetch_row($resultCount)[0];
 $totalPages = ceil($totalProducts / $itemsPerPage);
 
+$allRooms = getAllRooms();
+$allUsers=getAllUsers();
+
+if (isset($_POST['add_Order'])) {
+    $notes = $_POST['notes'];
+    $total = $_POST['total'];
+    $room = $_POST['room'];
+    $user_id = $_POST['user'];
+    $order_id = addOrder($user_id, $room, $total, 'pending', $notes);
+    if ($order_id) {
+        if (addOrderItems($order_id)) {
+          echo "<div class='modal fade' id='successModal' tabindex='-1' aria-labelledby='successModalLabel' aria-hidden='true'>
+          <div class='modal-dialog modal-dialog-centered'>
+            <div class='modal-content'>
+              <div class='modal-header bg-success text-white'>
+                <h5 class='modal-title' id='successModalLabel'>Success</h5>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+              </div>
+              <div class='modal-body'>
+                Your order has been placed successfully!
+              </div>
+              <div class='modal-footer'>
+                <button type='button' class='btn btn-success' data-bs-dismiss='modal'>OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+          });
+        </script>"; 
+        unset($_SESSION['cart']);
+        } else {
+          echo "<div class='modal fade' id='failureModal' tabindex='-1' aria-labelledby='failureModalLabel' aria-hidden='true'>
+          <div class='modal-dialog modal-dialog-centered'>
+            <div class='modal-content'>
+              <div class='modal-header bg-danger text-white'>
+                <h5 class='modal-title' id='failureModalLabel'>Error</h5>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+              </div>
+              <div class='modal-body'>
+                There was an issue adding your items to the order. Please try again.
+              </div>
+              <div class='modal-footer'>
+                <button type='button' class='btn btn-danger' data-bs-dismiss='modal'>OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              const failureModal = new bootstrap.Modal(document.getElementById('failureModal'));
+              failureModal.show();
+          });
+        </script>";  }
+    }
+}
+
+if (isset($_POST['update_quantity'])) {
+    list($action, $index) = explode('_', $_POST['update_quantity']);
+    if (isset($_SESSION['cart'][$index])) {
+        if ($action == 'increase' && $_SESSION['cart'][$index]['quantity'] < 10) {
+            $_SESSION['cart'][$index]['quantity']++;
+        } elseif ($action == 'decrease') {
+            if ($_SESSION['cart'][$index]['quantity'] > 1) {
+                $_SESSION['cart'][$index]['quantity']--;
+            } else {
+                array_splice($_SESSION['cart'], $index, 1);
+            }
+        }
+    }
+}
+if (isset($_POST['addToOrder'])) {
+    if (isset($_POST['productId'])) {
+        $productId = $_POST['productId'];
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+        $found = false;
+        foreach ($_SESSION['cart'] as &$item) {
+            if ($item['id'] == $productId) {
+                $item['quantity'] += 1;
+                $found = true;
+                break;
+            }
+        }
+        unset($item);
+        if (!$found) {
+            $_SESSION['cart'][] = [
+                'id' => $productId,
+                'quantity' => 1
+            ];
+        }
+        echo '<script>window.location.href="'.$_SERVER['PHP_SELF'].'";</script>';
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -228,7 +338,7 @@ body {
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 .container-fluid {
-  margin-left: 250px; /* Same as sidebar width */
+  margin-left: 250px; 
   width: calc(100% - 250px);
 }
 .btn-primary:hover {
@@ -270,112 +380,6 @@ body {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<?php
-include_once(__DIR__ .'/../../models/room.php');
-include_once(__DIR__ .'/../../models/order.php');
-include_once(__DIR__ .'/../../models/user.php');
-
-$allRooms = getAllRooms();
-$allUsers=getAllUsers();
-
-if (isset($_POST['add_Order'])) {
-    $notes = $_POST['notes'];
-    $total = $_POST['total'];
-    $room = $_POST['room'];
-    $user_id = $_POST['user'];
-    $order_id = addOrder($user_id, $room, $total, 'pending', $notes);
-    if ($order_id) {
-        if (addOrderItems($order_id)) {
-          echo "<div class='modal fade' id='successModal' tabindex='-1' aria-labelledby='successModalLabel' aria-hidden='true'>
-          <div class='modal-dialog modal-dialog-centered'>
-            <div class='modal-content'>
-              <div class='modal-header bg-success text-white'>
-                <h5 class='modal-title' id='successModalLabel'>Success</h5>
-                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-              </div>
-              <div class='modal-body'>
-                Your order has been placed successfully!
-              </div>
-              <div class='modal-footer'>
-                <button type='button' class='btn btn-success' data-bs-dismiss='modal'>OK</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <script>
-          document.addEventListener('DOMContentLoaded', function () {
-            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-            successModal.show();
-          });
-        </script>"; 
-        unset($_SESSION['cart']);
-        } else {
-          echo "<div class='modal fade' id='failureModal' tabindex='-1' aria-labelledby='failureModalLabel' aria-hidden='true'>
-          <div class='modal-dialog modal-dialog-centered'>
-            <div class='modal-content'>
-              <div class='modal-header bg-danger text-white'>
-                <h5 class='modal-title' id='failureModalLabel'>Error</h5>
-                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-              </div>
-              <div class='modal-body'>
-                There was an issue adding your items to the order. Please try again.
-              </div>
-              <div class='modal-footer'>
-                <button type='button' class='btn btn-danger' data-bs-dismiss='modal'>OK</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <script>
-          document.addEventListener('DOMContentLoaded', function () {
-              const failureModal = new bootstrap.Modal(document.getElementById('failureModal'));
-              failureModal.show();
-          });
-        </script>";  }
-    }
-}
-
-if (isset($_POST['update_quantity'])) {
-    list($action, $index) = explode('_', $_POST['update_quantity']);
-    if (isset($_SESSION['cart'][$index])) {
-        if ($action == 'increase' && $_SESSION['cart'][$index]['quantity'] < 10) {
-            $_SESSION['cart'][$index]['quantity']++;
-        } elseif ($action == 'decrease') {
-            if ($_SESSION['cart'][$index]['quantity'] > 1) {
-                $_SESSION['cart'][$index]['quantity']--;
-            } else {
-                array_splice($_SESSION['cart'], $index, 1);
-            }
-        }
-    }
-}
-if (isset($_POST['addToOrder'])) {
-    if (isset($_POST['productId'])) {
-        $productId = $_POST['productId'];
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-        $found = false;
-        foreach ($_SESSION['cart'] as &$item) {
-            if ($item['id'] == $productId) {
-                $item['quantity'] += 1;
-                $found = true;
-                break;
-            }
-        }
-        unset($item);
-        if (!$found) {
-            $_SESSION['cart'][] = [
-                'id' => $productId,
-                'quantity' => 1
-            ];
-        }
-        echo '<script>window.location.href="'.$_SERVER['PHP_SELF'].'";</script>';
-        exit();
-    }
-}
-
-?>
 <body class="p-3">
 <div class="d-flex">
   
@@ -385,6 +389,10 @@ if (isset($_POST['addToOrder'])) {
       <span>Admin Panel</span>
     </a>
     <div class="sidebar-divider"></div>
+    <form method="POST">  
+      <button type="submit" class="bg-light" style="border:none;" name="logout">
+    <a class=" text-danger sidebar-item">Log Out</a>
+                  </button> </form>
     <div class="nav flex-column">
     <a href="listProducts.php" class="sidebar-item mb-2">
         <i class="fas fa-box-open"></i> <span>Products</span>
@@ -464,6 +472,7 @@ if (isset($_POST['addToOrder'])) {
         </div>
 
         <?php
+
           function calculateCartTotal() {
               $subtotal = 0;
               if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
@@ -593,7 +602,6 @@ if (isset($_POST['addToOrder'])) {
         });
         document.body.appendChild(toggleBtn);
     });
-   
     </script>
 </body>
 </html>
